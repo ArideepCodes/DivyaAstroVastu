@@ -1,81 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Divya Astro Vastu | Vastu & Astrology Consultancy</title>
-    <meta name="description" content="Vastu Solutions Tailored for Every Space. Acharya Dr. Jaiprakash Narain Dwivedi offers precise, result-oriented Vastu Consultancy and Vedic Astrology guidance.">
-    
-    <!-- Fonts -->
+    <meta name="description" content="Divya Astro Vastu offers precise, result-oriented Vastu consultancy and Vedic astrology guidance for residential, commercial, and institutional spaces.">
+
+    <!-- Fonts: Playfair Display (Serif) & Manrope (Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Manrope:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cosmic-dark': '#080611',
+                        'cosmic-deep': '#100B20',
+                        'cosmic-purple': '#241740',
+                        'gold-muted': '#C9A45C',
+                        'gold-light': '#E5C985',
+                        'ivory': '#F5F0E7',
+                        'silver': '#AAA3B5'
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Manrope"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
     <style>
+        /* Base Settings */
         :root {
-            --c-bg: #080706;
-            --c-bg-deep: #050404;
-            --c-gold: #C9A45C;
-            --c-gold-light: #E8D19A;
-            --c-ivory: #F5EFE3;
-            --c-text-muted: #B8B0A3;
-            --c-burgundy: #3A1117;
-            --c-saffron: #C96F32;
-            
-            --font-display: 'Cormorant Garamond', serif;
-            --font-body: 'Manrope', sans-serif;
-
-            --easing: cubic-bezier(0.22, 1, 0.36, 1);
+            --cursor-size: 20px;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        
         body {
-            background-color: var(--c-bg);
-            color: var(--c-ivory);
-            font-family: var(--font-body);
+            background-color: #080611;
+            color: #F5F0E7;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            cursor: none; /* Custom cursor */
+            cursor: none; /* Custom cursor handling */
         }
 
-        /* --- Custom Cursor --- */
-        .cursor {
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080611;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #241740;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C9A45C;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot,
+        .cursor-outline {
             position: fixed;
             top: 0;
             left: 0;
-            width: 20px;
-            height: 20px;
-            border: 1px solid var(--c-gold);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
             transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, background-color 0.3s;
-            mix-blend-mode: difference;
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
         }
-        .cursor.hovered {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(201, 164, 92, 0.2);
-            border-color: transparent;
-        }
-        .cursor.active {
-            width: 10px;
-            height: 10px;
-            background-color: var(--c-gold);
+        
+        .cursor-dot {
+            width: 5px;
+            height: 5px;
+            background-color: #C9A45C;
         }
 
-        /* --- 3D Canvas Container --- */
+        .cursor-outline {
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(201, 164, 92, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        body:hover .cursor-outline.hovered {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(201, 164, 92, 0.1);
+            border-color: #C9A45C;
+        }
+
+        /* Typography Utilities */
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+            color: transparent;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #080611;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-out;
+        }
+
+        /* 3D Canvas */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -83,1399 +127,841 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.4; /* Subtle blend */
+            opacity: 0.6;
             pointer-events: none;
         }
 
-        /* --- Loading Screen --- */
-        .loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--c-bg);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            transition: opacity 1s ease-out;
+        /* Utility Animations */
+        .reveal-text {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
         }
-        .loader-logo {
-            width: 100px;
-            height: auto;
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: fadeUp 1s var(--easing) forwards;
+
+        .char {
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
         }
-        .loader-line {
+
+        .gold-line {
             width: 0;
-            height: 1px;
-            background: var(--c-gold);
-            animation: expandLine 1.5s var(--easing) 0.5s forwards;
+            transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(-10px); } }
-        @keyframes expandLine { to { width: 100px; } }
 
-        /* --- Typography & Utilities --- */
-        h1, h2, h3, h4 {
-            font-family: var(--font-display);
-            font-weight: 400;
-            line-height: 1.1;
+        /* Image Masking */
+        .image-reveal-container {
+            overflow: hidden;
+            position: relative;
         }
         
-        .container {
-            width: 90%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .image-reveal-img {
+            transform: scale(1.2);
+            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .text-gold { color: var(--c-gold); }
-        .text-muted { color: var(--c-text-muted); }
-        .uppercase { text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
-
-        .btn {
-            display: inline-block;
-            padding: 16px 32px;
-            border: 1px solid var(--c-gold);
-            color: var(--c-gold);
-            text-decoration: none;
-            font-family: var(--font-body);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            transition: all 0.4s var(--easing);
+        /* Magnetic Button */
+        .btn-magnetic {
             position: relative;
             overflow: hidden;
-            background: transparent;
-            cursor: none;
+            transition: transform 0.3s ease;
         }
-        .btn::before {
+        .btn-magnetic::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 0; height: 100%;
-            background: var(--c-gold);
-            transition: width 0.4s var(--easing);
-            z-index: -1;
-        }
-        .btn:hover::before { width: 100%; }
-        .btn:hover { color: var(--c-bg); }
-
-        /* --- Navigation --- */
-        nav {
-            position: fixed;
             top: 0;
-            width: 100%;
-            padding: 30px 0;
-            z-index: 1000;
-            transition: padding 0.4s, background 0.4s;
-        }
-        nav.scrolled {
-            padding: 15px 0;
-            background: rgba(8, 7, 6, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(201, 164, 92, 0.1);
-        }
-        .nav-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .nav-logo img {
-            height: 60px;
-            width: auto;
-        }
-        .nav-links {
-            display: flex;
-            gap: 40px;
-        }
-        .nav-links a {
-            color: var(--c-ivory);
-            text-decoration: none;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px; left: 0; width: 0; height: 1px;
-            background: var(--c-gold);
-            transition: width 0.3s;
-        }
-        .nav-links a:hover { opacity: 1; }
-        .nav-links a:hover::after { width: 100%; }
-        .mobile-toggle {
-            display: none;
-            color: var(--c-gold);
-            font-size: 1.5rem;
-            cursor: none;
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            min-height: 100vh;
-            padding-top: 140px;
-            padding-bottom: 60px;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-            width: 100%;
-        }
-        .hero-text {
-            z-index: 2;
-            padding-left: 5%;
-        }
-        .hero-title {
-            font-size: 4.5rem;
-            margin-bottom: 20px;
-            opacity: 0; /* GSAP reveal */
-            transform: translateY(30px);
-        }
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: var(--c-gold);
-            margin-bottom: 30px;
-            font-family: var(--font-display);
-            font-style: italic;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        .hero-desc {
-            max-width: 500px;
-            margin-bottom: 40px;
-            line-height: 1.6;
-            color: var(--c-text-muted);
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        .hero-image-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 3 / 4;
-            max-height: 70vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            opacity: 0;
-            transform: translateX(50px);
-        }
-        .hero-image-wrapper img {
-            display: block;
+            left: -100%;
             width: 100%;
             height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            filter: sepia(20%) contrast(110%);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
         }
-        .scroll-indicator {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            color: var(--c-gold);
-        }
-        .scroll-line {
-            width: 1px;
-            height: 60px;
-            background: linear-gradient(to bottom, var(--c-gold), transparent);
+        .btn-magnetic:hover::before {
+            left: 100%;
         }
 
-        /* --- About Section --- */
-        section {
-            padding: 150px 0;
-            position: relative;
-        }
-        .section-header {
-            margin-bottom: 80px;
-        }
-        .section-label {
-            color: var(--c-gold);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-        .section-title {
-            font-size: 3.5rem;
-            max-width: 800px;
-        }
-        
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 80px;
-        }
-        .about-text p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 30px;
-            color: var(--c-text-muted);
-        }
-        .acharya-card {
-            border-left: 1px solid var(--c-gold);
-            padding-left: 40px;
-            margin-top: 40px;
-        }
-        .acharya-name {
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
-        .acharya-title {
-            color: var(--c-gold);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-        }
-
-        /* --- Services --- */
-        .services-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .service-item {
-            display: grid;
-            grid-template-columns: 100px 1fr 200px;
-            align-items: center;
-            padding: 40px 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s;
-            cursor: none;
-            position: relative;
-        }
-        .service-item:hover {
-            padding-left: 20px;
-            border-color: var(--c-gold);
-        }
-        .service-num {
-            font-family: var(--font-display);
-            font-size: 2rem;
-            color: var(--c-gold);
-        }
-        .service-name {
-            font-size: 2.5rem;
-            font-family: var(--font-display);
-        }
-        .service-desc {
-            font-size: 0.9rem;
-            color: var(--c-text-muted);
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s;
-        }
-        .service-item:hover .service-desc {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- Vastu / Astrology Interactions --- */
-        .interactive-section {
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .grid-overlay {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-            z-index: 2;
-        }
-        .feature-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 30px;
-            transition: transform 0.3s;
-        }
-        .feature-card:hover {
-            background: rgba(201, 164, 92, 0.05);
-            border-color: rgba(201, 164, 92, 0.3);
-            transform: translateY(-5px);
-        }
-        .feature-card h4 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--c-gold-light);
-        }
-        .feature-card p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--c-text-muted);
-        }
-
-        /* --- Process --- */
-        .process-timeline {
-            position: relative;
-            margin-top: 80px;
-        }
-        .process-line {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: rgba(201, 164, 92, 0.3);
-        }
-        .process-step {
-            padding-left: 60px;
-            margin-bottom: 80px;
-            position: relative;
-        }
-        .process-step::before {
-            content: '';
-            position: absolute;
-            left: -4px;
-            top: 0;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: var(--c-bg);
-            border: 2px solid var(--c-gold);
-            transition: background 0.3s;
-        }
-        .process-step:hover::before {
-            background: var(--c-gold);
-        }
-        .step-num {
-            font-size: 1.2rem;
-            color: var(--c-gold);
-            margin-bottom: 10px;
-            display: block;
-        }
-        .step-title {
-            font-size: 2rem;
-            margin-bottom: 15px;
-        }
-
-        /* --- Contact --- */
-        .contact-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 100px;
-        }
-        .contact-info h3 {
-            font-size: 2rem;
-            margin-bottom: 30px;
-        }
-        .info-item {
-            margin-bottom: 30px;
-        }
-        .info-label {
-            display: block;
-            color: var(--c-gold);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-        .info-value {
-            font-size: 1.2rem;
-            color: var(--c-ivory);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .info-value:hover { color: var(--c-gold); }
-        
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding: 15px 0;
-            color: var(--c-ivory);
-            font-family: var(--font-body);
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-            border-color: var(--c-gold);
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        /* --- Footer --- */
-        footer {
-            border-top: 1px solid rgba(201, 164, 92, 0.2);
-            padding: 80px 0 40px;
-            background: var(--c-bg-deep);
-        }
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 60px;
-        }
-        .footer-logo img {
-            width: 120px;
-            opacity: 0.8;
-        }
-        .footer-links a {
-            color: var(--c-text-muted);
-            text-decoration: none;
-            margin-left: 30px;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-        .footer-links a:hover { color: var(--c-gold); }
-        .copyright {
-            text-align: center;
-            color: #555;
-            font-size: 0.8rem;
-        }
-
-        /* --- Toast Notification --- */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--c-gold);
-            color: var(--c-bg);
-            padding: 15px 30px;
-            border-radius: 4px;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.5s var(--easing);
-            z-index: 10000;
-            font-weight: 600;
-        }
-        .toast.visible { transform: translateY(0); opacity: 1; }
-
-        /* --- Responsive --- */
-        @media (max-width: 1024px) {
-            .hero-content { grid-template-columns: 1fr; text-align: center; }
-            .hero-text { padding-left: 0; order: 2; }
-            .hero-image-wrapper { order: 1; max-height: 50vh; transform: none; }
-            .hero-title { font-size: 3rem; }
-            .about-grid, .contact-layout, .footer-content { grid-template-columns: 1fr; flex-direction: column; align-items: flex-start; gap: 50px; }
-            .nav-links { display: none; position: absolute; top: 80px; left: 0; width: 100%; background: var(--c-bg); flex-direction: column; padding: 30px; gap: 20px; text-align: center; }
-            .nav-links.active { display: flex; }
-            .mobile-toggle { display: block; }
-            .service-item { grid-template-columns: 1fr; gap: 10px; padding: 20px 0; }
-            .service-desc { opacity: 1; transform: none; display: none; }
-            .service-item:hover .service-desc { display: block; }
-        }
     </style>
 </head>
-<body>
+<body class="antialiased selection:bg-gold-muted selection:text-cosmic-dark">
 
-    <!-- Custom Cursor -->
-    <div class="cursor"></div>
-
-    <!-- Loader -->
-    <div class="loader">
-        <img src="./Logo.png" alt="Divya Astro Vastu Logo" class="loader-logo">
-        <div class="loader-line"></div>
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="text-center">
+            <img src="Logo.png" alt="Divya Astro Vastu Logo" class="h-24 w-auto mb-4 mx-auto opacity-0 logo-reveal">
+            <div class="h-[1px] w-24 bg-gold-muted mx-auto overflow-hidden">
+                <div class="h-full bg-gold-light w-full animate-[loading_1.5s_ease-in-out_infinite]" style="transform: translateX(-100%);"></div>
+            </div>
+        </div>
     </div>
 
     <!-- 3D Background -->
     <div id="canvas-container"></div>
 
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
     <!-- Navigation -->
-    <nav>
-        <div class="container nav-inner">
-            <a href="#" class="nav-logo hover-target">
-                <img src="./Logo.png" alt="Divya Astro Vastu">
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-6 px-6 md:px-12 flex justify-between items-center mix-blend-difference text-ivory">
+        <a href="#" class="relative z-50 group">
+            <img src="Logo.png" alt="Divya Astro Vastu" class="h-12 md:h-16 transition-transform duration-700 group-hover:scale-105">
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center space-x-12 text-sm tracking-[0.2em] font-light uppercase">
+            <a href="#about" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
+                About
+                <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
             </a>
-            <div class="mobile-toggle hover-target">☰</div>
-            <div class="nav-links">
-                <a href="#home" class="hover-target">Home</a>
-                <a href="#about" class="hover-target">About</a>
-                <a href="#services" class="hover-target">Services</a>
-                <a href="#contact" class="hover-target">Contact</a>
-                <a href="#contact" class="btn hover-target" style="padding: 8px 20px; margin-left: 20px;">Book Consultation</a>
-            </div>
+            <a href="#services" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
+                Services
+                <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#vastu" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
+                Vastu
+                <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#astrology" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
+                Astrology
+                <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#contact" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
+                Contact
+                <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#contact" class="btn-magnetic px-6 py-3 border border-gold-muted/50 text-gold-muted hover:bg-gold-muted hover:text-cosmic-dark transition-all duration-500">
+                Book Consultation
+            </a>
         </div>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobile-menu-btn" class="md:hidden z-50 focus:outline-none">
+            <div class="w-6 h-0.5 bg-ivory mb-1.5 transition-all duration-300"></div>
+            <div class="w-6 h-0.5 bg-ivory transition-all duration-300"></div>
+        </button>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-cosmic-dark/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-500 flex flex-col justify-center items-center space-y-8 text-center">
+        <a href="#about" class="mobile-link text-2xl font-serif text-ivory hover:text-gold-muted">About</a>
+        <a href="#services" class="mobile-link text-2xl font-serif text-ivory hover:text-gold-muted">Services</a>
+        <a href="#vastu" class="mobile-link text-2xl font-serif text-ivory hover:text-gold-muted">Vastu</a>
+        <a href="#astrology" class="mobile-link text-2xl font-serif text-ivory hover:text-gold-muted">Astrology</a>
+        <a href="#contact" class="mobile-link text-xl uppercase tracking-widest text-gold-muted border-b border-gold-muted pb-1">Book Consultation</a>
+    </div>
+
     <main>
         <!-- Hero Section -->
-        <section id="home" class="hero">
-            <div class="container hero-content">
-                <div class="hero-text">
-                    <span class="uppercase text-gold section-label">Divya Astro Vastu</span>
-                    <h1 class="hero-title">Ancient Wisdom.<br>Modern Living.</h1>
-                    <p class="hero-desc">Vastu Solutions Tailored for Every Space. Acharya Dr. Jaiprakash Narain Dwivedi offers precise, result-oriented Vastu Consultancy for a wide range of residential, commercial and institutional spaces.</p>
-                    <div style="margin-top: 40px;">
-                        <a href="#contact" class="btn hover-target">Book Consultation</a>
-                        <a href="#services" class="btn hover-target" style="margin-left: 20px; border-color: rgba(255,255,255,0.3); color: var(--c-ivory);">Explore Services</a>
-                    </div>
+        <section class="min-h-screen relative flex flex-col md:flex-row items-center justify-center pt-24 px-6 md:px-12 overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-cosmic-dark to-transparent z-0 pointer-events-none"></div>
+            
+            <div class="w-full md:w-1/2 z-10 flex flex-col justify-center items-start space-y-8 order-2 md:order-1 mt-12 md:mt-0">
+                <div class="overflow-hidden">
+                    <p class="text-gold-muted tracking-[0.3em] text-xs md:text-sm uppercase hero-text opacity-0 translate-y-10">Ancient Wisdom • Modern Perspective</p>
                 </div>
-                <div class="hero-image-wrapper">
-                    <img src="./Pic1.png" alt="Acharya Dr. Jaiprakash Narain Dwivedi">
+                
+                <div class="overflow-hidden">
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif leading-[0.9] text-ivory hero-text opacity-0 translate-y-10">
+                        Vastu Solutions<br>
+                        <span class="italic text-gold-muted font-light">Tailored for</span><br>
+                        Every Space
+                    </h1>
+                </div>
+
+                <div class="max-w-md text-silver font-light text-lg leading-relaxed hero-text opacity-0 translate-y-10">
+                    Acharya Dr. Jaiprakash Narain Dwivedi offers precise, result-oriented Vastu consultancy for residential, commercial, and institutional spaces.
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-6 pt-4 hero-text opacity-0 translate-y-10">
+                    <a href="#contact" class="btn-magnetic px-8 py-4 bg-gold-muted text-cosmic-dark font-medium tracking-wider hover:bg-gold-light transition-colors">
+                        BOOK A CONSULTATION
+                    </a>
+                    <a href="#services" class="btn-magnetic px-8 py-4 border border-white/20 text-ivory tracking-wider hover:border-gold-muted hover:text-gold-muted transition-colors">
+                        EXPLORE SERVICES
+                    </a>
                 </div>
             </div>
-            <div class="scroll-indicator">
-                <span>SCROLL</span>
-                <div class="scroll-line"></div>
+
+            <div class="w-full md:w-1/2 relative z-10 flex justify-center order-1 md:order-2">
+                <div class="relative w-[80%] md:w-[70%] aspect-[3/4] image-reveal-container hero-img opacity-0 scale-110">
+                    <!-- Abstract Golden Frame behind image -->
+                    <div class="absolute -inset-4 border border-gold-muted/20 rounded-tl-[100px] rounded-br-[100px] translate-x-4 translate-y-4"></div>
+                    
+                    <img src="Pic1.png" alt="Acharya Dr. Jaiprakash Narain Dwivedi" class="w-full h-full object-cover shadow-2xl relative z-10 image-reveal-img">
+                    
+                    <!-- Overlay Gradient -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-cosmic-dark via-transparent to-transparent opacity-60 z-20"></div>
+                </div>
             </div>
         </section>
 
         <!-- About Section -->
-        <section id="about">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-label">Who We Are</span>
-                    <h2 class="section-title">Unlock the Power of Vedic Wisdom for Modern Life</h2>
+        <section id="about" class="py-32 px-6 md:px-12 bg-cosmic-dark relative">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative reveal-on-scroll">
+                    <div class="aspect-[4/3] w-full overflow-hidden relative">
+                        <img src="Slide1.png" alt="Astrology Experience" class="w-full h-full object-cover transition-transform duration-[2s] hover:scale-105">
+                        <div class="absolute inset-0 border border-gold-muted/30 m-4"></div>
+                    </div>
+                    <!-- Floating decorative element -->
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 border border-gold-muted/10 rounded-full flex items-center justify-center animate-[spin_10s_linear_infinite]">
+                        <div class="w-32 h-32 border border-gold-muted/20 rounded-full"></div>
+                    </div>
                 </div>
-                <div class="about-grid">
-                    <div class="about-text">
-                        <p>We merge ancient Vedic wisdom with modern scientific insights for transformative solutions that bring clarity, harmony, and success in personal and professional life.</p>
-                        <p>With over 10 years of professional experience across India and internationally, Divya Astro Vastu stands at the intersection of traditional knowledge and contemporary needs.</p>
-                        
-                        <div class="acharya-card">
-                            <h3 class="acharya-name">Acharya Dr. Jaiprakash Narain Dwivedi</h3>
-                            <p class="acharya-title uppercase">Modern Astrology Expert & Professional Vastu Consultant (Ph.D. Japan)</p>
-                            <p class="text-muted" style="font-size: 0.95rem;">Blending ethical practices with personalized guidance for homes, businesses, and personal growth.</p>
-                        </div>
-                    </div>
-                    <!-- Decorative geometric placeholder handled by CSS/3D background -->
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                        <!-- Text based visual element to save space while maintaining style -->
-                        <div style="border: 1px solid var(--c-gold); padding: 60px 40px; text-align: center;">
-                            <span style="font-family: var(--font-display); font-size: 3rem; color: var(--c-gold-light);">10+</span>
-                            <p class="uppercase" style="letter-spacing: 2px; font-size: 0.8rem; margin-top: 10px;">Years of<br>Experience</p>
-                        </div>
-                    </div>
+
+                <div class="reveal-on-scroll">
+                    <span class="text-gold-muted text-sm tracking-[0.3em] uppercase block mb-6">About Divya Astro Vastu</span>
+                    <h2 class="text-4xl md:text-5xl font-serif text-ivory mb-8 leading-tight">
+                        Unlock the Power of Vedic Wisdom for Modern Life
+                    </h2>
+                    <div class="w-16 h-[1px] bg-gold-muted mb-8"></div>
+                    <p class="text-silver text-lg leading-relaxed mb-6 font-light">
+                        We merge ancient Vedic wisdom with modern scientific insights for transformative solutions that bring clarity, harmony, and success in personal and professional life.
+                    </p>
+                    <p class="text-silver text-lg leading-relaxed font-light">
+                        Rooted in tradition yet adapted for contemporary living, our approach ensures that every consultation is personalized, ethical, and effective.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Acharya Section -->
+        <section class="py-32 px-6 md:px-12 bg-[#0D0918] relative overflow-hidden">
+            <!-- Background Glow -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cosmic-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <div class="max-w-4xl mx-auto text-center relative z-10 reveal-on-scroll">
+                <div class="w-[1px] h-24 bg-gold-muted mx-auto mb-8"></div>
+                
+                <h2 class="text-silver tracking-[0.3em] text-sm uppercase mb-4">Meet The Expert</h2>
+                <h3 class="text-4xl md:text-6xl font-serif text-ivory mb-2">
+                    Acharya Dr. Jaiprakash Narain Dwivedi
+                </h3>
+                <p class="text-gold-muted italic text-xl mb-6">
+                    Modern Astrology Expert & Professional Vastu Consultant
+                </p>
+                <p class="text-xl text-ivory font-light mb-12">
+                    Ph.D. (Japan)
+                </p>
+
+                <div class="block text-xl md:text-2xl font-serif text-gold-muted/80">
+                    आचार्य डॉ. जयप्रकाश नारायण द्विवेदी
                 </div>
             </div>
         </section>
 
         <!-- Services Section -->
-        <section id="services">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-label">What We Do</span>
-                    <h2 class="section-title">Vastu Solutions Tailored for Every Space</h2>
+        <section id="services" class="py-32 px-6 md:px-12 bg-cosmic-dark">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-20 reveal-on-scroll">
+                    <span class="text-gold-muted text-sm tracking-[0.3em] uppercase">Our Expertise</span>
+                    <h2 class="text-4xl md:text-5xl font-serif text-ivory mt-4">What Services We Are Providing</h2>
                 </div>
 
-                <div class="services-list">
-                    <div class="service-item hover-target">
-                        <span class="service-num">01</span>
-                        <h3 class="service-name">Residential & Commercial Vastu</h3>
-                        <span class="service-desc">Harmonize homes and workplaces for peace, prosperity, and business growth.</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold-muted/10 border border-gold-muted/10">
+                    <!-- Service Item -->
+                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
+                            <span class="text-6xl font-serif text-gold-muted">01</span>
+                        </div>
+                        <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Residential & Commercial Vastu</h3>
+                        <p class="text-silver font-light leading-relaxed">Comprehensive analysis to ensure harmony and prosperity in your living and working environments.</p>
                     </div>
-                    <div class="service-item hover-target">
-                        <span class="service-num">02</span>
-                        <h3 class="service-name">Architecture & Interiors</h3>
-                        <span class="service-desc">Project-based Vastu integration with modern design for balanced energy flow.</span>
-                    </div>
-                    <div class="service-item hover-target">
-                        <span class="service-num">03</span>
-                        <h3 class="service-name">Personalized Horoscope</h3>
-                        <span class="service-desc">Deep birth chart analysis to guide life, career, and relationships.</span>
-                    </div>
-                    <div class="service-item hover-target">
-                        <span class="service-num">04</span>
-                        <h3 class="service-name">Career, Finance & Marriage</h3>
-                        <span class="service-desc">Astrological guidance to improve stability and choose the right path.</span>
-                    </div>
-                    <div class="service-item hover-target">
-                        <span class="service-num">05</span>
-                        <h3 class="service-name">Muhurat Selection</h3>
-                        <span class="service-desc">Choosing traditionally auspicious timings for important activities.</span>
-                    </div>
-                    <div class="service-item hover-target">
-                        <span class="service-num">06</span>
-                        <h3 class="service-name">Online Consultation</h3>
-                        <span class="service-desc">Trusted guidance available worldwide via secure virtual sessions.</span>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- Vastu Experience (3D Transition Zone) -->
-        <section id="vastu" class="interactive-section">
-            <div class="container">
-                <span class="section-label">Vastu Shastra</span>
-                <h2 class="section-title">Vastu for Every Kind of Space</h2>
-                <p class="text-muted" style="max-width: 600px; margin-bottom: 40px;">From land selection to interior layout, we ensure your environment supports your goals without requiring demolition for pre-constructed spaces.</p>
+                    <!-- Service Item -->
+                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
+                            <span class="text-6xl font-serif text-gold-muted">02</span>
+                        </div>
+                        <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Project-Based Vastu</h3>
+                        <p class="text-silver font-light leading-relaxed">Specialized consultancy for architecture and interior projects, integrated from the blueprint stage.</p>
+                    </div>
 
-                <div class="grid-overlay">
-                    <div class="feature-card">
-                        <h4>Multi-story Buildings</h4>
-                        <p>Analyzing direction, entry, staircase, and room placement for independent houses.</p>
+                    <!-- Service Item -->
+                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
+                            <span class="text-6xl font-serif text-gold-muted">03</span>
+                        </div>
+                        <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Personalized Horoscope</h3>
+                        <p class="text-silver font-light leading-relaxed">Deep dive into your birth chart to uncover potential, challenges, and life's purpose.</p>
                     </div>
-                    <div class="feature-card">
-                        <h4>Offices & Commercial</h4>
-                        <p>Optimizing cabins, workstations, and finance zones for productivity and leadership.</p>
+
+                    <!-- Service Item -->
+                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
+                            <span class="text-6xl font-serif text-gold-muted">04</span>
+                        </div>
+                        <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Career, Finance & Marriage</h3>
+                        <p class="text-silver font-light leading-relaxed">Focused guidance on critical life aspects including career growth, financial stability, and marital compatibility.</p>
                     </div>
-                    <div class="feature-card">
-                        <h4>Hospitals</h4>
-                        <p>Creating a considered and harmonious environment focusing on room orientations.</p>
+
+                    <!-- Service Item -->
+                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
+                            <span class="text-6xl font-serif text-gold-muted">05</span>
+                        </div>
+                        <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Muhurat Selection</h3>
+                        <p class="text-silver font-light leading-relaxed">Auspicious timing for important events like weddings, business launches, and property purchases.</p>
                     </div>
-                    <div class="feature-card">
-                        <h4>Hotels & Restaurants</h4>
-                        <p>Enhancing guest experience through kitchen placement and operational flow design.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>Educational Campuses</h4>
-                        <p>Fostering focus, creativity, and discipline in classrooms and libraries.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h4>New Construction</h4>
-                        <p>Land selection, plot orientation, and architectural mapping before development begins.</p>
+
+                    <!-- Service Item -->
+                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
+                            <span class="text-6xl font-serif text-gold-muted">06</span>
+                        </div>
+                        <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Online Consultation</h3>
+                        <p class="text-silver font-light leading-relaxed">Accessible guidance worldwide via secure online video consultations and digital reports.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Astrology Experience (3D Transition Zone) -->
-        <section id="astrology" class="interactive-section">
-            <div class="container">
-                <span class="section-label">Astrology</span>
-                <h2 class="section-title">Guidance Through the Stars</h2>
-                <p class="text-muted" style="max-width: 600px; margin-bottom: 40px;">We do not believe in deterministic predictions. Instead, we offer personalized interpretation to help you navigate life's tides with confidence.</p>
-                
-                <div style="display: flex; gap: 40px; flex-wrap: wrap;">
-                    <div class="feature-card" style="flex: 1; min-width: 250px;">
-                        <h4>Birth Chart Analysis</h4>
-                        <p>A detailed map of the sky at your moment of birth reveals potential and challenges.</p>
+        <!-- Vastu Section -->
+        <section id="vastu" class="py-32 px-6 md:px-12 bg-[#0D0918] relative">
+             <div class="max-w-7xl mx-auto">
+                 <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-on-scroll">
+                     <div>
+                         <span class="text-gold-muted text-sm tracking-[0.3em] uppercase">Spatial Harmony</span>
+                         <h2 class="text-4xl md:text-5xl font-serif text-ivory mt-4">Vastu for Every Kind of Space</h2>
+                     </div>
+                     <p class="text-silver max-w-sm mt-6 md:mt-0 text-right font-light">
+                        Scientific Vastu analysis to optimize energy flow for specific environments.
+                     </p>
+                 </div>
+
+                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                     <div class="border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
+                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">RESIDENTIAL</span>
+                         <h4 class="text-xl font-serif text-ivory">Multi-story Buildings & Independent Houses</h4>
+                     </div>
+                     <div class="border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
+                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">COMMERCIAL</span>
+                         <h4 class="text-xl font-serif text-ivory">Offices, Shops & Malls</h4>
+                     </div>
+                     <div class="border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
+                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">INSTITUTIONAL</span>
+                         <h4 class="text-xl font-serif text-ivory">Hospitals, Schools & Colleges</h4>
+                     </div>
+                     <div class="border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
+                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">HOSPITALITY</span>
+                         <h4 class="text-xl font-serif text-ivory">Hotels & Restaurants</h4>
+                     </div>
+                     <div class="col-span-2 border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
+                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">INDUSTRIAL</span>
+                         <h4 class="text-xl font-serif text-ivory">Factories & Manufacturing Units</h4>
+                     </div>
+                     <div class="col-span-2 border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
+                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">NEW CONSTRUCTION</span>
+                         <h4 class="text-xl font-serif text-ivory">Site Selection & Blueprint Correction</h4>
+                     </div>
+                 </div>
+             </div>
+        </section>
+
+        <!-- Astrology / Horoscope / Consultation Combined Section -->
+        <section id="astrology" class="py-32 px-6 md:px-12 bg-cosmic-dark relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-cosmic-purple/10 to-transparent pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto">
+                <!-- Subsection 1: Guidance -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-32 reveal-on-scroll">
+                    <div>
+                         <span class="text-gold-muted text-sm tracking-[0.3em] uppercase block mb-6">Guidance Through the Stars</span>
+                        <h2 class="text-4xl font-serif text-ivory mb-6 leading-tight">Navigate Life with Celestial Insight</h2>
+                        <p class="text-silver font-light text-lg leading-relaxed mb-6">
+                            Our astrology services provide clarity in times of confusion. From birth chart analysis to specific predictions about career and relationships, we offer responsible guidance based on Vedic principles.
+                        </p>
+                        <ul class="space-y-4 text-silver font-light">
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-gold-muted rounded-full mr-3"></span>Personalized Horoscope Reading</li>
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-gold-muted rounded-full mr-3"></span>Career & Financial Guidance</li>
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-gold-muted rounded-full mr-3"></span>Marriage & Relationship Compatibility</li>
+                        </ul>
                     </div>
-                    <div class="feature-card" style="flex: 1; min-width: 250px;">
-                        <h4>Relationships</h4>
-                        <p>Compatibility readings to foster understanding and harmony in partnerships.</p>
+                    <div class="relative">
+                        <img src="Slide2.png" alt="Horoscope Analysis" class="w-full shadow-2xl border border-white/5 relative z-10">
+                        <!-- Decorative Backing -->
+                        <div class="absolute inset-0 border border-gold-muted/30 translate-x-4 translate-y-4 -z-10"></div>
                     </div>
-                    <div class="feature-card" style="flex: 1; min-width: 250px;">
-                        <h4>Remedial Solutions</h4>
-                        <p>Practical, simple remedies to mitigate negative influences and strengthen positives.</p>
+                </div>
+
+                <!-- Subsection 2: Deep Consultation -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center reveal-on-scroll">
+                    <div class="order-2 md:order-1 relative">
+                         <img src="Slide3.png" alt="Consultation" class="w-full shadow-2xl border border-white/5 grayscale hover:grayscale-0 transition-all duration-700">
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <span class="text-gold-muted text-sm tracking-[0.3em] uppercase block mb-6">Personalized Consultation</span>
+                        <h2 class="text-4xl font-serif text-ivory mb-6 leading-tight">Addressing Personal Challenges</h2>
+                        <p class="text-silver font-light text-lg leading-relaxed mb-8">
+                            Every individual faces unique challenges. Through detailed astrological analysis, we identify the root causes of obstacles and suggest practical remedies to mitigate negative influences and enhance positive outcomes.
+                        </p>
+                        <a href="#contact" class="inline-block border-b border-gold-muted pb-1 text-gold-muted hover:text-ivory hover:border-ivory transition-colors">Book Your Session</a>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Process Section -->
-        <section id="process">
-            <div class="container">
-                <h2 class="section-title">Our Working Process</h2>
-                <div class="process-timeline">
-                    <div class="process-line"></div>
-                    
-                    <div class="process-step">
-                        <span class="step-num">01</span>
-                        <h3 class="step-title">Understand</h3>
-                        <p class="text-muted">We begin by deeply understanding your concerns, requirements, and the context of your space or life situation.</p>
-                    </div>
-                    
-                    <div class="process-step">
-                        <span class="step-num">02</span>
-                        <h3 class="step-title">Analyze</h3>
-                        <p class="text-muted">We analyze relevant details through the lens of Vastu principles and/or Vedic Astrology charts.</p>
-                    </div>
-                    
-                    <div class="process-step">
-                        <span class="step-num">03</span>
-                        <h3 class="step-title">Recommend</h3>
-                        <p class="text-muted">We provide personalized, practical recommendations and solutions tailored to your specific needs.</p>
+        <section class="py-32 px-6 md:px-12 bg-[#0D0918]">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-20 reveal-on-scroll">
+                    <h2 class="text-4xl md:text-5xl font-serif text-ivory">Our Working Process</h2>
+                </div>
+
+                <div class="relative">
+                    <!-- Vertical Line -->
+                    <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-gold-muted/50 to-transparent hidden md:block"></div>
+
+                    <!-- Step 1 -->
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-16 reveal-on-scroll">
+                        <div class="md:w-5/12 text-right pr-8">
+                            <h3 class="text-2xl font-serif text-gold-muted mb-2">01. Understand</h3>
+                            <p class="text-silver font-light">We begin by listening. Understanding your concerns, requirements, and the specific context of your query or space.</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-cosmic-dark border-2 border-gold-muted z-10 hidden md:block"></div>
+                        <div class="md:w-5/12 pl-8"></div>
                     </div>
 
-                    <div class="process-step">
-                        <span class="step-num">04</span>
-                        <h3 class="step-title">Guide</h3>
-                        <p class="text-muted">We offer guidance and follow-up support to ensure the implementation is effective and clear.</p>
+                    <!-- Step 2 -->
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-16 reveal-on-scroll">
+                        <div class="md:w-5/12 pr-8"></div>
+                        <div class="w-8 h-8 rounded-full bg-cosmic-dark border-2 border-gold-muted z-10 hidden md:block"></div>
+                        <div class="md:w-5/12 text-left pl-8">
+                            <h3 class="text-2xl font-serif text-gold-muted mb-2">02. Analyze</h3>
+                            <p class="text-silver font-light">Analyzing the relevant details using complex Vastu principles and/or astrological calculations based on your birth chart.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-16 reveal-on-scroll">
+                        <div class="md:w-5/12 text-right pr-8">
+                            <h3 class="text-2xl font-serif text-gold-muted mb-2">03. Recommend</h3>
+                            <p class="text-silver font-light">Providing clear, actionable, and personalized solutions. No generic advice—only what works for your unique situation.</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-cosmic-dark border-2 border-gold-muted z-10 hidden md:block"></div>
+                        <div class="md:w-5/12 pl-8"></div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flex flex-col md:flex-row justify-between items-center reveal-on-scroll">
+                        <div class="md:w-5/12 pr-8"></div>
+                        <div class="w-8 h-8 rounded-full bg-cosmic-dark border-2 border-gold-muted z-10 hidden md:block"></div>
+                        <div class="md:w-5/12 text-left pl-8">
+                            <h3 class="text-2xl font-serif text-gold-muted mb-2">04. Guide</h3>
+                            <p class="text-silver font-light">Offering ongoing guidance and support where appropriate to ensure the remedies are implemented correctly.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Trust & Reach Section -->
-        <section id="reach" style="background: var(--c-bg-deep);">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">Trusted Globally</h2>
-                </div>
-                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; font-size: 1.5rem; font-family: var(--font-display); color: var(--c-gold);">
-                    <span>India</span>
-                    <span>Japan</span>
-                    <span>USA</span>
-                    <span>Europe</span>
-                    <span>Middle East</span>
-                </div>
-                <p class="text-muted" style="margin-top: 40px; max-width: 600px;">
-                    Serving clients across borders with the same dedication to confidentiality, honest communication, and ethical practice.
+        <!-- Experience / Global Reach -->
+        <section class="py-32 px-6 md:px-12 bg-cosmic-dark text-center">
+            <div class="max-w-4xl mx-auto mb-20 reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-serif text-ivory mb-8">Experience Built Through Practice</h2>
+                <p class="text-silver text-xl font-light">
+                    10+ years of professional experience serving Homes, Offices, Commercial Spaces, and Individuals globally.
                 </p>
+            </div>
+
+            <!-- Trust Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto reveal-on-scroll">
+                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500">
+                    <div class="text-3xl font-serif text-gold-muted mb-2">10+</div>
+                    <div class="text-xs tracking-widest text-silver uppercase">Years Experience</div>
+                </div>
+                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500">
+                    <div class="text-3xl font-serif text-gold-muted mb-2">Global</div>
+                    <div class="text-xs tracking-widest text-silver uppercase">Client Reach</div>
+                </div>
+                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500">
+                    <div class="text-3xl font-serif text-gold-muted mb-2">Ethical</div>
+                    <div class="text-xs tracking-widest text-silver uppercase">Confidential Approach</div>
+                </div>
+                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500">
+                    <div class="text-3xl font-serif text-gold-muted mb-2">Ph.D</div>
+                    <div class="text-xs tracking-widest text-silver uppercase">Qualified Expert</div>
+                </div>
+            </div>
+
+            <!-- World Map Visualization (CSS Approximation) -->
+            <div class="mt-24 relative w-full max-w-3xl mx-auto h-[300px] opacity-30 pointer-events-none reveal-on-scroll">
+                <svg viewBox="0 0 800 400" class="w-full h-full stroke-gold-muted fill-none stroke-[1px]">
+                    <path d="M150,100 Q200,50 300,100 T500,150 T700,100" class="animate-pulse" />
+                    <circle cx="620" cy="130" r="4" class="fill-gold-muted animate-ping" /> <!-- India approx -->
+                    <circle cx="200" cy="120" r="3" class="fill-gold-muted" /> <!-- Japan/Asia -->
+                    <circle cx="180" cy="140" r="3" class="fill-gold-muted" /> <!-- Europe -->
+                    <circle cx="100" cy="130" r="3" class="fill-gold-muted" /> <!-- USA -->
+                </svg>
+                <div class="absolute bottom-0 w-full text-center text-xs tracking-[0.3em] text-gold-muted uppercase">Serving Clients Worldwide</div>
+            </div>
+        </section>
+
+        <!-- Quote Section -->
+        <section class="py-32 px-6 relative overflow-hidden flex items-center justify-center">
+            <div class="absolute inset-0 bg-gradient-to-r from-cosmic-purple via-cosmic-dark to-cosmic-purple opacity-50"></div>
+            <div class="relative z-10 text-center max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-serif text-ivory italic leading-tight reveal-on-scroll">
+                    "Ancient wisdom, thoughtfully applied to modern life."
+                </h2>
             </div>
         </section>
 
         <!-- Contact Section -->
-        <section id="contact">
-            <div class="container">
-                <div class="contact-layout">
-                    <div class="contact-info">
-                        <span class="section-label">Get in Touch</span>
-                        <h3>Begin Your Consultation</h3>
-                        <p class="text-muted" style="margin-bottom: 40px;">Find harmony between your space, your surroundings and your journey.</p>
-                        
-                        <div class="info-item">
-                            <span class="info-label">Phone</span>
-                            <a href="tel:+919958752510" class="info-value hover-target">+91 99587 52510</a>
+        <section id="contact" class="py-32 px-6 md:px-12 bg-cosmic-dark relative">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div class="reveal-on-scroll">
+                    <h2 class="text-5xl font-serif text-ivory mb-8">Let's Begin a Conversation</h2>
+                    <p class="text-silver text-lg font-light mb-12">
+                        Whether you are looking for Vastu consultation for a new project or seeking astrological guidance, we are here to assist you.
+                    </p>
+                    
+                    <div class="space-y-8 text-silver font-light">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 border border-gold-muted/30 flex items-center justify-center mr-6 mt-1">
+                                <span class="text-gold-muted">📍</span>
+                            </div>
+                            <div>
+                                <h4 class="text-ivory mb-2">Location</h4>
+                                <p>TF-307, Shyam Resi cum Plaza, Waghodia Rd,<br>above SBI Branch, Near Parivar Char Rasta,<br>Sarthi Nagar 2, Kendranagar, Vadodara,<br>Gujarat 390019, India</p>
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Email</span>
-                            <a href="mailto:divyaastrovastu@gmail.com" class="info-value hover-target">divyaastrovastu@gmail.com</a>
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 border border-gold-muted/30 flex items-center justify-center mr-6 mt-1">
+                                <span class="text-gold-muted">✉</span>
+                            </div>
+                            <div>
+                                <h4 class="text-ivory mb-2">Email</h4>
+                                <p><a href="mailto:divyaastrovastu@gmail.com" class="hover:text-gold-muted transition-colors">divyaastrovastu@gmail.com</a></p>
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Location</span>
-                            <p class="info-value" style="color: var(--c-text-muted); font-size: 1rem;">
-                                TF-307, Shyam Resi cum Plaza, Waghodia Rd,<br>
-                                above SBI Branch, Near Parivar Char Rasta,<br>
-                                Sarthi Nagar 2, Kendranagar,<br>
-                                Vadodara, Gujarat 390019
-                            </p>
-                        </div>
-                        <div class="info-item" style="margin-top: 40px;">
-                            <span class="info-label">Hours</span>
-                            <p class="info-value" style="color: var(--c-text-muted);">Monday - Friday, 7am - 5pm</p>
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 border border-gold-muted/30 flex items-center justify-center mr-6 mt-1">
+                                <span class="text-gold-muted">📞</span>
+                            </div>
+                            <div>
+                                <h4 class="text-ivory mb-2">Phone</h4>
+                                <p><a href="tel:+919958752510" class="hover:text-gold-muted transition-colors">+91 99587 52510</a></p>
+                                <p class="text-sm mt-1 text-ivory/50">Monday - Friday, 7am - 5pm</p>
+                            </div>
                         </div>
                     </div>
 
-                    <form class="contact-form" id="contactForm">
-                        <div class="form-group">
-                            <input type="text" placeholder="Name" required class="hover-target">
+                    <!-- Social Links -->
+                    <div class="flex space-x-6 mt-12">
+                        <a href="https://www.facebook.com/share/1AXM9TbnY1/" target="_blank" class="w-10 h-10 border border-white/20 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all">
+                            f
+                        </a>
+                        <a href="https://www.instagram.com/divyaastrovastu" target="_blank" class="w-10 h-10 border border-white/20 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all">
+                            in
+                        </a>
+                        <a href="https://youtube.com/@divyaastrovastu" target="_blank" class="w-10 h-10 border border-white/20 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all">
+                            yt
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="bg-[#100B20] p-8 md:p-12 border border-white/5 reveal-on-scroll">
+                    <form id="contactForm" class="space-y-8">
+                        <div class="relative group">
+                            <input type="text" id="name" required class="w-full bg-transparent border-b border-white/20 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent">
+                            <label for="name" class="absolute left-0 top-4 text-silver transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs">Name</label>
                         </div>
-                        <div class="form-group">
-                            <input type="email" placeholder="Email" required class="hover-target">
+                        <div class="relative group">
+                            <input type="email" id="email" required class="w-full bg-transparent border-b border-white/20 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent">
+                            <label for="email" class="absolute left-0 top-4 text-silver transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs">Email</label>
                         </div>
-                        <div class="form-group">
-                            <textarea placeholder="Message" required class="hover-target"></textarea>
+                        <div class="relative group">
+                            <textarea id="message" rows="4" required class="w-full bg-transparent border-b border-white/20 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent resize-none"></textarea>
+                            <label for="message" class="absolute left-0 top-4 text-silver transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs">Comment or Message</label>
                         </div>
-                        <button type="submit" class="btn hover-target">Send Message</button>
+                        
+                        <button type="submit" class="w-full btn-magnetic py-4 bg-gold-muted text-cosmic-dark font-medium tracking-widest hover:bg-gold-light transition-colors mt-8">
+                            SEND MESSAGE
+                        </button>
+                        
+                        <div id="formFeedback" class="text-center text-sm mt-4 h-5"></div>
                     </form>
                 </div>
             </div>
         </section>
+
+        <!-- Footer -->
+        <footer class="py-12 px-6 md:px-12 border-t border-white/10 bg-cosmic-dark relative z-10">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0 text-center md:text-left">
+                    <img src="Logo.png" alt="Divya Astro Vastu" class="h-12 w-auto mb-4 mx-auto md:mx-0 opacity-80">
+                    <p class="text-silver/50 text-sm">Vadodara, Gujarat, India</p>
+                </div>
+                
+                <div class="flex space-x-8 text-sm tracking-widest text-silver/70 mb-8 md:mb-0 uppercase">
+                    <a href="#" class="hover:text-gold-muted transition-colors">Home</a>
+                    <a href="#about" class="hover:text-gold-muted transition-colors">About</a>
+                    <a href="#services" class="hover:text-gold-muted transition-colors">Services</a>
+                    <a href="#contact" class="hover:text-gold-muted transition-colors">Contact</a>
+                </div>
+
+                <div class="text-silver/40 text-sm">
+                    &copy; 2023 Divya Astro Vastu
+                </div>
+            </div>
+        </footer>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <img src="./Logo.png" alt="Divya Astro Vastu">
-                    </div>
-                    <p class="text-muted" style="margin-top: 20px; max-width: 300px;">
-                        Acharya Dr. Jaiprakash Narain Dwivedi<br>
-                        Ph.D. (Japan)
-                    </p>
-                </div>
-                <div class="footer-links">
-                    <a href="https://www.facebook.com/share/1AXM9TbnY1/" target="_blank" class="hover-target">Facebook</a>
-                    <a href="https://www.instagram.com/divyaastrovastu" target="_blank" class="hover-target">Instagram</a>
-                    <a href="https://youtube.com/@divyaastrovastu" target="_blank" class="hover-target">YouTube</a>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2023 Divya Astro Vastu. All rights reserved.
-            </div>
-        </div>
-    </footer>
-
-    <!-- Toast -->
-    <div class="toast" id="toast">Message Sent Successfully</div>
-
-    <!-- Scripts -->
+    <!-- Scripts: Three.js & GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <script>
-        // --- 1. Loader & Init ---
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelector('.loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.querySelector('.loader').style.display = 'none';
-                    initAnimations(); // Start text animations
-                }, 1000);
-            }, 1500);
-        });
-
-        // --- 2. Custom Cursor ---
-        const cursor = document.querySelector('.cursor');
+        // --- 1. Custom Cursor ---
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
         
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Dot follows immediately
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline follows with lag (animation in CSS transition not enough for smooth follow, using animate)
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
         });
 
-        document.querySelectorAll('.hover-target, a, button').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+        // Add hover effect to interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .service-card, input, textarea');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.classList.add('hovered');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.classList.remove('hovered');
+            });
         });
 
-        document.addEventListener('mousedown', () => cursor.classList.add('active'));
-        document.addEventListener('mouseup', () => cursor.classList.remove('active'));
+        // --- 2. Three.js Particle Background (Subtle Stars) ---
+        const initThreeJS = () => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            
+            // Camera
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
 
-        // --- 3. Navigation Scroll ---
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
+            // Renderer
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 800; // Count of stars
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for(let i = 0; i < particlesCount * 3; i++) {
+                // Spread particles
+                posArray[i] = (Math.random() - 0.5) * 100; 
             }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            // Material
+            const material = new THREE.PointsMaterial({
+                size: 0.08,
+                color: 0xC9A45C, // Goldish
+                transparent: true,
+                opacity: 0.8,
+            });
+
+            // Mesh
+            const particlesMesh = new THREE.Points(particlesGeometry, material);
+            scene.add(particlesMesh);
+
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = event.clientX / window.innerWidth - 0.5;
+                mouseY = event.clientY / window.innerHeight - 0.5;
+            });
+
+            // Animation Loop
+            const clock = new THREE.Clock();
+
+            const animate = () => {
+                const elapsedTime = clock.getElapsedTime();
+
+                // Gentle rotation
+                particlesMesh.rotation.y = elapsedTime * 0.05;
+                particlesMesh.rotation.x = mouseY * 0.1;
+                particlesMesh.rotation.y += mouseX * 0.1;
+
+                renderer.render(scene, camera);
+                window.requestAnimationFrame(animate);
+            };
+
+            animate();
+
+            // Resize handle
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+
+        // --- 3. Page Load & Loader ---
+        window.addEventListener('load', () => {
+            initThreeJS();
+            
+            const tl = gsap.timeline();
+
+            // Animate Loader Out
+            tl.to('.logo-reveal', { opacity: 1, duration: 1 })
+              .to('#loader', { opacity: 0, duration: 0.8, delay: 0.5, onComplete: () => {
+                  document.getElementById('loader').style.display = 'none';
+              }})
+              
+            // Hero Animations
+              .to('.hero-text', { 
+                  y: 0, 
+                  opacity: 1, 
+                  duration: 1, 
+                  stagger: 0.2, 
+                  ease: 'power3.out' 
+              }, "-=0.5")
+              .to('.hero-img', { 
+                  scale: 1, 
+                  opacity: 1, 
+                  duration: 1.5, 
+                  ease: 'power2.out' 
+              }, "-=1")
+              .to('.image-reveal-img', { 
+                  scale: 1, 
+                  duration: 2, 
+                  ease: 'power2.out' 
+              }, "-=1.5");
         });
 
-        // Mobile Menu
-        document.querySelector('.mobile-toggle').addEventListener('click', () => {
-            document.querySelector('.nav-links').classList.toggle('active');
-        });
-
-        // --- 4. GSAP Animations ---
+        // --- 4. Scroll Animations (GSAP ScrollTrigger) ---
         gsap.registerPlugin(ScrollTrigger);
 
-        function initAnimations() {
-            // Hero Reveals
-            gsap.to('.hero-title', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
-            gsap.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.4 });
-            gsap.to('.hero-desc', { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.6 });
-            gsap.to('.hero-image-wrapper', { opacity: 1, x: 0, duration: 1.5, ease: 'power3.out', delay: 0.5 });
-
-            // Scroll Sections
-            gsap.utils.toArray('section').forEach(section => {
-                gsap.from(section.children, {
-                    scrollTrigger: {
-                        trigger: section,
-                        start: 'top 80%',
-                    },
-                    y: 50,
-                    opacity: 0,
+        // Reveal Sections
+        const revealElements = document.querySelectorAll('.reveal-on-scroll');
+        revealElements.forEach(el => {
+            gsap.fromTo(el, 
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
                     duration: 1,
-                    stagger: 0.2,
-                    ease: 'power3.out'
-                });
-            });
-        }
-
-        // --- 5. Three.js Background System (Single Canvas Strategy) ---
-        const canvasContainer = document.getElementById('canvas-container');
-        
-        // Scene Setup
-        const scene = new THREE.Scene();
-        // Fog for depth
-        scene.fog = new THREE.FogExp2(0x080706, 0.0016);
-
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.autoClear = true;
-        canvasContainer.appendChild(renderer.domElement);
-
-        // --- Glow sprite helper (soft radial-gradient texture, additive blend) ---
-        function makeGlowTexture(hexColor) {
-            const c = document.createElement('canvas');
-            c.width = c.height = 128;
-            const ctx = c.getContext('2d');
-            const grd = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-            grd.addColorStop(0, hexColor);
-            grd.addColorStop(0.35, hexColor);
-            grd.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grd;
-            ctx.fillRect(0, 0, 128, 128);
-            return new THREE.CanvasTexture(c);
-        }
-        function makeGlowSprite(hexColor, size) {
-            const mat = new THREE.SpriteMaterial({
-                map: makeGlowTexture(hexColor),
-                transparent: true,
-                depthWrite: false,
-                blending: THREE.AdditiveBlending
-            });
-            const sprite = new THREE.Sprite(mat);
-            sprite.scale.set(size, size, 1);
-            return sprite;
-        }
-
-        // Real zodiac glyph sprite (drawn unicode symbol over a soft glow)
-        function makeGlyphTexture(symbol, hexColor) {
-            const c = document.createElement('canvas');
-            c.width = c.height = 128;
-            const ctx = c.getContext('2d');
-            const grd = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-            grd.addColorStop(0, 'rgba(232,209,154,0.4)');
-            grd.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = grd;
-            ctx.fillRect(0, 0, 128, 128);
-            ctx.font = '82px serif';
-            ctx.fillStyle = hexColor;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(symbol, 64, 70);
-            return new THREE.CanvasTexture(c);
-        }
-        function makeGlyphSprite(symbol, hexColor, size) {
-            const mat = new THREE.SpriteMaterial({
-                map: makeGlyphTexture(symbol, hexColor),
-                transparent: true,
-                depthWrite: false,
-                blending: THREE.AdditiveBlending
-            });
-            const sprite = new THREE.Sprite(mat);
-            sprite.scale.set(size, size, 1);
-            return sprite;
-        }
-
-        // Violet-gold nebula dust — sits behind every scene for depth and color
-        const nebulaGeo = new THREE.BufferGeometry();
-        const nebulaCount = 700;
-        const nebulaPos = new Float32Array(nebulaCount * 3);
-        const nebulaCol = new Float32Array(nebulaCount * 3);
-        const goldC = new THREE.Color(0xC9A45C);
-        const violetC = new THREE.Color(0x6a3fb5);
-        for (let i = 0; i < nebulaCount; i++) {
-            const r = 25 + Math.random() * 45;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.random() * Math.PI;
-            nebulaPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
-            nebulaPos[i*3+1] = r * Math.cos(phi) * 0.35;
-            nebulaPos[i*3+2] = r * Math.sin(phi) * Math.sin(theta) - 25;
-            const mixed = goldC.clone().lerp(violetC, Math.random());
-            nebulaCol[i*3] = mixed.r; nebulaCol[i*3+1] = mixed.g; nebulaCol[i*3+2] = mixed.b;
-        }
-        nebulaGeo.setAttribute('position', new THREE.BufferAttribute(nebulaPos, 3));
-        nebulaGeo.setAttribute('color', new THREE.BufferAttribute(nebulaCol, 3));
-        const nebulaMat = new THREE.PointsMaterial({ size: 0.7, vertexColors: true, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false });
-        const nebulaMesh = new THREE.Points(nebulaGeo, nebulaMat);
-        scene.add(nebulaMesh);
-
-        // Colored starfield with twinkle
-        const starsGeometry = new THREE.BufferGeometry();
-        const starsCount = 3200;
-        const posArray = new Float32Array(starsCount * 3);
-        for (let i = 0; i < starsCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 140;
-        }
-        starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const starsMaterial = new THREE.PointsMaterial({
-            size: 0.12,
-            color: 0xE8D19A,
-            transparent: true,
-            opacity: 0.7,
-            sizeAttenuation: true
-        });
-        const starMesh = new THREE.Points(starsGeometry, starsMaterial);
-        scene.add(starMesh);
-
-        // --- Group 1: Hero Mandala (Sacred Geometry) ---
-        const heroGroup = new THREE.Group();
-        scene.add(heroGroup);
-
-        // Central glowing sun core
-        const heroSun = makeGlowSprite('rgba(232,209,154,1)', 14);
-        heroGroup.add(heroSun);
-
-        // Flower-of-Life: 7 overlapping coplanar rings (1 center + 6 hexagonal)
-        const flowerGroup = new THREE.Group();
-        const flowerMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, transparent: true, opacity: 0.22 });
-        const flowerRingGeo = new THREE.TorusGeometry(6, 0.035, 8, 80);
-        const flowerCenters = [[0,0]];
-        for (let i = 0; i < 6; i++) {
-            const a = (Math.PI / 3) * i;
-            flowerCenters.push([Math.cos(a) * 6, Math.sin(a) * 6]);
-        }
-        flowerCenters.forEach(([x, y]) => {
-            const ring = new THREE.Mesh(flowerRingGeo, flowerMat);
-            ring.position.set(x, y, 0);
-            flowerGroup.add(ring);
-        });
-        heroGroup.add(flowerGroup);
-
-        // Outer sacred rings (like a torus-knot halo, subtler than before)
-        const outerRingGeo = new THREE.TorusGeometry(16, 0.05, 8, 100);
-        const outerRingMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, transparent: true, opacity: 0.18 });
-        const outerRingA = new THREE.Mesh(outerRingGeo, outerRingMat);
-        const outerRingB = new THREE.Mesh(outerRingGeo, outerRingMat);
-        const outerRingC = new THREE.Mesh(outerRingGeo, outerRingMat);
-        outerRingB.rotation.x = Math.PI / 3;
-        outerRingC.rotation.x = -Math.PI / 3;
-        heroGroup.add(outerRingA, outerRingB, outerRingC);
-
-        // Slow-drifting embers around the mandala
-        const emberGeo = new THREE.BufferGeometry();
-        const emberCount = 250;
-        const emberPos = new Float32Array(emberCount * 3);
-        for (let i = 0; i < emberCount; i++) {
-            const r = 10 + Math.random() * 14;
-            const a = Math.random() * Math.PI * 2;
-            emberPos[i*3] = Math.cos(a) * r;
-            emberPos[i*3+1] = (Math.random() - 0.5) * 10;
-            emberPos[i*3+2] = Math.sin(a) * r;
-        }
-        emberGeo.setAttribute('position', new THREE.BufferAttribute(emberPos, 3));
-        const emberMat = new THREE.PointsMaterial({ size: 0.18, color: 0xE8D19A, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending });
-        const emberMesh = new THREE.Points(emberGeo, emberMat);
-        heroGroup.add(emberMesh);
-
-        // --- Group 2: Vastu Grid (Architecture) ---
-        const vastuGroup = new THREE.Group();
-        vastuGroup.visible = false;
-        scene.add(vastuGroup);
-
-        const gridHelper = new THREE.GridHelper(50, 50, 0xC9A45C, 0x333333);
-        gridHelper.material.opacity = 0.2;
-        gridHelper.material.transparent = true;
-        vastuGroup.add(gridHelper);
-
-        const boxGeo = new THREE.BoxGeometry(1, 1, 1);
-        const boxMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, wireframe: true, transparent: true, opacity: 0.3 });
-        const vastuCubes = [];
-        for (let i = 0; i < 20; i++) {
-            const cube = new THREE.Mesh(boxGeo, boxMat);
-            cube.position.set(
-                (Math.random() - 0.5) * 30,
-                Math.random() * 5,
-                (Math.random() - 0.5) * 30
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
             );
-            cube.scale.set(1 + Math.random(), 1 + Math.random() * 4, 1 + Math.random());
-            vastuGroup.add(cube);
-            vastuCubes.push(cube);
-            // A small glowing "energy node" atop each structure
-            const node = makeGlowSprite('rgba(201,164,92,1)', 0.8);
-            node.position.set(cube.position.x, cube.position.y + (cube.scale.y / 2) + 0.4, cube.position.z);
-            vastuGroup.add(node);
-        }
-
-        // Compass ring marking the four directions (core Vastu concept)
-        const compassRing = new THREE.Mesh(new THREE.TorusGeometry(22, 0.04, 8, 100), new THREE.MeshBasicMaterial({ color: 0xC9A45C, transparent: true, opacity: 0.35 }));
-        compassRing.rotation.x = Math.PI / 2;
-        vastuGroup.add(compassRing);
-        const compassPoints = [];
-        [0, 1, 2, 3].forEach(i => {
-            const a = (Math.PI / 2) * i;
-            const dot = makeGlowSprite('rgba(232,209,154,1)', 1.6);
-            dot.position.set(Math.cos(a) * 22, 0, Math.sin(a) * 22);
-            vastuGroup.add(dot);
-            compassPoints.push(dot);
         });
 
-        // --- Group 3: Astrology (Chakras + Zodiac Wheel + Orbits) ---
-        const astroGroup = new THREE.Group();
-        astroGroup.visible = false;
-        scene.add(astroGroup);
-
-        // Chakra column — seven energy centers, root to crown
-        const chakraColors = [0xff3b30, 0xff9500, 0xffe14d, 0x4de07a, 0x4db4ff, 0x4d5bff, 0xb066ff];
-        const chakraOrbs = [];
-        const chakraCount = chakraColors.length;
-        const chakraSpan = 11;
-        for (let i = 0; i < chakraCount; i++) {
-            const y = -chakraSpan / 2 + (chakraSpan / (chakraCount - 1)) * i;
-            const hex = '#' + chakraColors[i].toString(16).padStart(6, '0');
-            const glow = makeGlowSprite(hex, 2.4);
-            glow.position.set(0, y, 0);
-            astroGroup.add(glow);
-            const core = new THREE.Mesh(
-                new THREE.IcosahedronGeometry(0.35, 0),
-                new THREE.MeshBasicMaterial({ color: chakraColors[i], wireframe: true, transparent: true, opacity: 0.85 })
-            );
-            core.position.set(0, y, 0);
-            astroGroup.add(core);
-            chakraOrbs.push({ glow, core, baseY: y, phase: i * 0.7 });
-        }
-        // Vertical energy beam connecting the chakras
-        const beamGeo = new THREE.CylinderGeometry(0.015, 0.015, chakraSpan, 8, 1, true);
-        const beamMat = new THREE.MeshBasicMaterial({ color: 0xE8D19A, transparent: true, opacity: 0.25 });
-        const beam = new THREE.Mesh(beamGeo, beamMat);
-        astroGroup.add(beam);
-
-        // Zodiac wheel — outer ring with twelve glowing sign markers
-        const zodiacGroup = new THREE.Group();
-        const zodiacRing = new THREE.Mesh(new THREE.TorusGeometry(13, 0.05, 8, 120), new THREE.MeshBasicMaterial({ color: 0xC9A45C, transparent: true, opacity: 0.35 }));
-        zodiacGroup.add(zodiacRing);
-        const zodiacSymbols = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
-        const zodiacMarkers = [];
-        for (let i = 0; i < 12; i++) {
-            const a = (Math.PI * 2 / 12) * i;
-            const pos = new THREE.Vector3(Math.cos(a) * 13, Math.sin(a) * 13, 0);
-            const glyph = makeGlyphSprite(zodiacSymbols[i], '#F5EFE3', 2);
-            glyph.position.copy(pos);
-            zodiacGroup.add(glyph);
-            zodiacMarkers.push(glyph);
-        }
-        zodiacGroup.rotation.x = Math.PI / 2.4;
-        astroGroup.add(zodiacGroup);
-
-        // Orbital rings with planets (deeper space, behind the chakra column)
-        const ringGeo = new THREE.RingGeometry(7, 7.05, 64);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, side: THREE.DoubleSide, transparent: true, opacity: 0.3 });
-        const ring1 = new THREE.Mesh(ringGeo, ringMat);
-        const ring2 = new THREE.Mesh(new THREE.RingGeometry(9, 9.05, 64), ringMat);
-        const ring3 = new THREE.Mesh(new THREE.RingGeometry(11, 11.05, 64), ringMat);
-        ring1.rotation.x = Math.PI / 2;
-        ring2.rotation.x = Math.PI / 1.8;
-        ring2.rotation.y = Math.PI / 6;
-        ring3.rotation.x = Math.PI / 2.2;
-        astroGroup.add(ring1, ring2, ring3);
-
-        const p1 = makeGlowSprite('rgba(232,209,154,1)', 1.2);
-        const p2 = makeGlowSprite('rgba(201,164,92,1)', 1.4);
-        const p3 = makeGlowSprite('rgba(255,255,255,1)', 0.9);
-        ring1.add(p1); p1.position.set(7, 0, 0);
-        ring2.add(p2); p2.position.set(9, 0, 0);
-        ring3.add(p3); p3.position.set(11, 0, 0);
-
-        // Central sun glow behind the chakra column
-        const astroSun = makeGlowSprite('rgba(255,241,214,1)', 5);
-        astroSun.position.set(0, 0, -6);
-        astroGroup.add(astroSun);
-
-        // --- Cinematic Bloom (post-processing) ---
-        const composer = new THREE.EffectComposer(renderer);
-        composer.addPass(new THREE.RenderPass(scene, camera));
-        const bloomPass = new THREE.UnrealBloomPass(
-            new THREE.Vector2(window.innerWidth, window.innerHeight),
-            0.45,   // strength
-            0.4,    // radius
-            0.35    // threshold
-        );
-        composer.addPass(bloomPass);
-
-        // --- Shooting stars (hero scene only) ---
-        function spawnShootingStar() {
-            if (!heroGroup.visible) return;
-            const star = makeGlowSprite('rgba(255,255,255,1)', 0.7);
-            const startX = -45 - Math.random() * 15;
-            const startY = 15 + Math.random() * 12;
-            star.position.set(startX, startY, -8 - Math.random() * 6);
-            heroGroup.add(star);
-            gsap.to(star.position, {
-                x: startX + 90,
-                y: startY - 35,
-                duration: 1.4 + Math.random() * 0.6,
-                ease: 'power1.in',
-                onComplete: () => {
-                    heroGroup.remove(star);
-                    star.material.map.dispose();
-                    star.material.dispose();
+        // Parallax for Images
+        const parallaxImages = document.querySelectorAll('.image-reveal-container');
+        parallaxImages.forEach(imgContainer => {
+            const img = imgContainer.querySelector('img');
+            gsap.to(img, {
+                yPercent: 15,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: imgContainer,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
                 }
             });
-            gsap.to(star.scale, { x: 0.05, y: 0.05, delay: 1.0, duration: 0.5 });
-        }
-        setInterval(() => { if (Math.random() < 0.6) spawnShootingStar(); }, 3200);
-
-        // --- Camera & Animation Logic ---
-        camera.position.z = 30;
-
-        // Interaction state
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - windowHalfX);
-            mouseY = (event.clientY - windowHalfY);
         });
 
-        // Scroll Logic for Scene Transition
-        let currentSceneState = 'hero'; // 'hero', 'vastu', 'astro'
-        
+        // Navbar Background on Scroll
+        const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const height = document.body.scrollHeight - window.innerHeight;
-            const progress = scrollY / height;
-
-            // Simple state machine based on scroll percentage
-            // 0.0 - 0.3: Hero
-            // 0.3 - 0.6: Vastu
-            // 0.6 - 1.0: Astro
-
-            if (progress < 0.3) {
-                if (currentSceneState !== 'hero') {
-                    switchScene('hero');
-                    currentSceneState = 'hero';
-                }
-            } else if (progress < 0.6) {
-                if (currentSceneState !== 'vastu') {
-                    switchScene('vastu');
-                    currentSceneState = 'vastu';
-                }
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-cosmic-dark/80', 'backdrop-blur-md', 'shadow-lg', 'py-4');
+                navbar.classList.remove('py-6');
             } else {
-                if (currentSceneState !== 'astro') {
-                    switchScene('astro');
-                    currentSceneState = 'astro';
-                }
+                navbar.classList.remove('bg-cosmic-dark/80', 'backdrop-blur-md', 'shadow-lg', 'py-4');
+                navbar.classList.add('py-6');
             }
         });
 
-        function switchScene(newState) {
-            // Fade out all
-            gsap.to(heroGroup.scale, { x: 0, y: 0, z: 0, duration: 1, onComplete: () => {
-                if (newState === 'hero') {
-                    heroGroup.visible = true;
-                    vastuGroup.visible = false;
-                    astroGroup.visible = false;
-                    gsap.to(heroGroup.scale, { x: 1, y: 1, z: 1, duration: 1 });
-                    camera.position.z = 30;
-                } else if (newState === 'vastu') {
-                    heroGroup.visible = false;
-                    vastuGroup.visible = true;
-                    astroGroup.visible = false;
-                    gsap.to(vastuGroup.scale, { x: 1, y: 1, z: 1, duration: 1 }); // Assumes scale was 0
-                    camera.position.z = 20;
-                    camera.position.y = 5;
-                } else if (newState === 'astro') {
-                    heroGroup.visible = false;
-                    vastuGroup.visible = false;
-                    astroGroup.visible = true;
-                    gsap.to(astroGroup.scale, { x: 1, y: 1, z: 1, duration: 1 });
-                    camera.position.z = 15;
-                }
-            }});
-        }
+        // --- 5. Mobile Menu ---
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        let isMenuOpen = false;
 
-        // Initialize scales
-        vastuGroup.scale.set(0,0,0);
-        astroGroup.scale.set(0,0,0);
-
-
-        // --- Render Loop ---
-        const clock = new THREE.Clock();
-
-        function animate() {
-            const t = clock.getElapsedTime();
-
-            targetX = mouseX * 0.001;
-            targetY = mouseY * 0.001;
-
-            // Twinkling starfield (gentle global pulse + slow drift)
-            starMesh.rotation.y = t * 0.015;
-            starsMaterial.opacity = 0.55 + Math.sin(t * 0.6) * 0.15;
-            nebulaMesh.rotation.y = t * 0.006;
-
-            // Mouse parallax easing
-            heroGroup.rotation.y += 0.05 * (targetX - heroGroup.rotation.y);
-            heroGroup.rotation.x += 0.05 * (targetY - heroGroup.rotation.x);
-
-            // --- Hero: sacred geometry mandala ---
-            if (heroGroup.visible) {
-                flowerGroup.rotation.z = t * 0.04;
-                outerRingA.rotation.z = t * 0.06;
-                outerRingB.rotation.z = -t * 0.045;
-                outerRingC.rotation.z = t * 0.03;
-                heroSun.scale.setScalar(14 + Math.sin(t * 1.2) * 1.2);
-                emberMesh.rotation.y = t * 0.03;
+        menuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('translate-x-full');
+                // Animate hamburger
+                menuBtn.children[0].classList.add('rotate-45', 'translate-y-2.5');
+                menuBtn.children[1].classList.add('opacity-0');
+            } else {
+                mobileMenu.classList.add('translate-x-full');
+                menuBtn.children[0].classList.remove('rotate-45', 'translate-y-2.5');
+                menuBtn.children[1].classList.remove('opacity-0');
             }
-
-            // --- Vastu: living grid ---
-            if (vastuGroup.visible) {
-                vastuGroup.rotation.y = t * 0.08;
-                compassRing.rotation.z = t * 0.05;
-                vastuCubes.forEach((cube, i) => {
-                    cube.rotation.x = Math.sin(t + i) * 0.1;
-                });
-                compassPoints.forEach((dot, i) => {
-                    const pulse = 1.4 + Math.sin(t * 2 + i * 1.5) * 0.5;
-                    dot.scale.setScalar(pulse);
-                });
-            }
-
-            // --- Astrology: chakras + zodiac + orbits ---
-            if (astroGroup.visible) {
-                astroGroup.rotation.y += 0.04 * (targetX - astroGroup.rotation.y);
-
-                // Chakra pulse, root to crown, each glowing on its own breath
-                chakraOrbs.forEach((c, i) => {
-                    const pulse = 1 + Math.sin(t * 1.6 + c.phase) * 0.25;
-                    c.glow.scale.set(2.4 * pulse, 2.4 * pulse, 1);
-                    c.core.rotation.x = t * 0.5 + i;
-                    c.core.rotation.y = t * 0.3 + i;
-                });
-
-                zodiacGroup.rotation.z = t * 0.05;
-                zodiacMarkers.forEach((glyph, i) => {
-                    glyph.material.rotation = Math.sin(t * 0.2 + i) * 0.25;
-                });
-
-                ring1.rotation.z = t * 0.2;
-                ring2.rotation.z = t * 0.15;
-                ring3.rotation.z = t * 0.25;
-
-                astroSun.scale.setScalar(5 + Math.sin(t * 0.9) * 0.5);
-            }
-
-            composer.render();
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        // --- 6. Resize Handler ---
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- 7. Form Handling ---
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                isMenuOpen = false;
+                mobileMenu.classList.add('translate-x-full');
+                menuBtn.children[0].classList.remove('rotate-45', 'translate-y-2.5');
+                menuBtn.children[1].classList.remove('opacity-0');
+            });
+        });
+
+        // --- 6. Contact Form Handling ---
         const form = document.getElementById('contactForm');
-        const toast = document.getElementById('toast');
+        const feedback = document.getElementById('formFeedback');
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            // Simulate form submission
             const btn = form.querySelector('button');
             const originalText = btn.innerText;
-            btn.innerText = 'Sending...';
+            
+            // Simulate sending
+            btn.innerText = 'SENDING...';
+            btn.classList.add('opacity-70');
             
             setTimeout(() => {
                 btn.innerText = originalText;
+                btn.classList.remove('opacity-70');
+                feedback.innerText = 'Thank you. We will contact you shortly.';
+                feedback.classList.add('text-gold-muted');
                 form.reset();
-                showToast();
+                
+                setTimeout(() => {
+                    feedback.innerText = '';
+                }, 5000);
             }, 1500);
         });
 
-        function showToast() {
-            toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-            }, 3000);
-        }
+        // --- 7. Smooth Scroll for Anchor Links ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
 
     </script>
 </body>
