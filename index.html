@@ -83,7 +83,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.6; /* Subtle blend */
+            opacity: 0.4; /* Subtle blend */
             pointer-events: none;
         }
 
@@ -907,6 +907,13 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
@@ -985,55 +992,166 @@
         // Scene Setup
         const scene = new THREE.Scene();
         // Fog for depth
-        scene.fog = new THREE.FogExp2(0x080706, 0.002);
+        scene.fog = new THREE.FogExp2(0x080706, 0.0016);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.autoClear = true;
         canvasContainer.appendChild(renderer.domElement);
 
-        // --- Group 1: Hero Mandala ---
-        const heroGroup = new THREE.Group();
-        scene.add(heroGroup);
-
-        // Gold Wireframe Torus Knot (Abstract Mandala)
-        const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0xC9A45C, 
-            wireframe: true,
-            transparent: true,
-            opacity: 0.15
-        });
-        const mandala = new THREE.Mesh(geometry, material);
-        heroGroup.add(mandala);
-
-        // Starfield
-        const starsGeometry = new THREE.BufferGeometry();
-        const starsCount = 2000;
-        const posArray = new Float32Array(starsCount * 3);
-        
-        for(let i = 0; i < starsCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 100;
+        // --- Glow sprite helper (soft radial-gradient texture, additive blend) ---
+        function makeGlowTexture(hexColor) {
+            const c = document.createElement('canvas');
+            c.width = c.height = 128;
+            const ctx = c.getContext('2d');
+            const grd = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+            grd.addColorStop(0, hexColor);
+            grd.addColorStop(0.35, hexColor);
+            grd.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grd;
+            ctx.fillRect(0, 0, 128, 128);
+            return new THREE.CanvasTexture(c);
         }
-        
+        function makeGlowSprite(hexColor, size) {
+            const mat = new THREE.SpriteMaterial({
+                map: makeGlowTexture(hexColor),
+                transparent: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending
+            });
+            const sprite = new THREE.Sprite(mat);
+            sprite.scale.set(size, size, 1);
+            return sprite;
+        }
+
+        // Real zodiac glyph sprite (drawn unicode symbol over a soft glow)
+        function makeGlyphTexture(symbol, hexColor) {
+            const c = document.createElement('canvas');
+            c.width = c.height = 128;
+            const ctx = c.getContext('2d');
+            const grd = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+            grd.addColorStop(0, 'rgba(232,209,154,0.4)');
+            grd.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = grd;
+            ctx.fillRect(0, 0, 128, 128);
+            ctx.font = '82px serif';
+            ctx.fillStyle = hexColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(symbol, 64, 70);
+            return new THREE.CanvasTexture(c);
+        }
+        function makeGlyphSprite(symbol, hexColor, size) {
+            const mat = new THREE.SpriteMaterial({
+                map: makeGlyphTexture(symbol, hexColor),
+                transparent: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending
+            });
+            const sprite = new THREE.Sprite(mat);
+            sprite.scale.set(size, size, 1);
+            return sprite;
+        }
+
+        // Violet-gold nebula dust — sits behind every scene for depth and color
+        const nebulaGeo = new THREE.BufferGeometry();
+        const nebulaCount = 700;
+        const nebulaPos = new Float32Array(nebulaCount * 3);
+        const nebulaCol = new Float32Array(nebulaCount * 3);
+        const goldC = new THREE.Color(0xC9A45C);
+        const violetC = new THREE.Color(0x6a3fb5);
+        for (let i = 0; i < nebulaCount; i++) {
+            const r = 25 + Math.random() * 45;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            nebulaPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+            nebulaPos[i*3+1] = r * Math.cos(phi) * 0.35;
+            nebulaPos[i*3+2] = r * Math.sin(phi) * Math.sin(theta) - 25;
+            const mixed = goldC.clone().lerp(violetC, Math.random());
+            nebulaCol[i*3] = mixed.r; nebulaCol[i*3+1] = mixed.g; nebulaCol[i*3+2] = mixed.b;
+        }
+        nebulaGeo.setAttribute('position', new THREE.BufferAttribute(nebulaPos, 3));
+        nebulaGeo.setAttribute('color', new THREE.BufferAttribute(nebulaCol, 3));
+        const nebulaMat = new THREE.PointsMaterial({ size: 0.7, vertexColors: true, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false });
+        const nebulaMesh = new THREE.Points(nebulaGeo, nebulaMat);
+        scene.add(nebulaMesh);
+
+        // Colored starfield with twinkle
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsCount = 3200;
+        const posArray = new Float32Array(starsCount * 3);
+        for (let i = 0; i < starsCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 140;
+        }
         starsGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         const starsMaterial = new THREE.PointsMaterial({
-            size: 0.05,
+            size: 0.12,
             color: 0xE8D19A,
             transparent: true,
-            opacity: 0.8
+            opacity: 0.7,
+            sizeAttenuation: true
         });
         const starMesh = new THREE.Points(starsGeometry, starsMaterial);
         scene.add(starMesh);
+
+        // --- Group 1: Hero Mandala (Sacred Geometry) ---
+        const heroGroup = new THREE.Group();
+        scene.add(heroGroup);
+
+        // Central glowing sun core
+        const heroSun = makeGlowSprite('rgba(232,209,154,1)', 14);
+        heroGroup.add(heroSun);
+
+        // Flower-of-Life: 7 overlapping coplanar rings (1 center + 6 hexagonal)
+        const flowerGroup = new THREE.Group();
+        const flowerMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, transparent: true, opacity: 0.22 });
+        const flowerRingGeo = new THREE.TorusGeometry(6, 0.035, 8, 80);
+        const flowerCenters = [[0,0]];
+        for (let i = 0; i < 6; i++) {
+            const a = (Math.PI / 3) * i;
+            flowerCenters.push([Math.cos(a) * 6, Math.sin(a) * 6]);
+        }
+        flowerCenters.forEach(([x, y]) => {
+            const ring = new THREE.Mesh(flowerRingGeo, flowerMat);
+            ring.position.set(x, y, 0);
+            flowerGroup.add(ring);
+        });
+        heroGroup.add(flowerGroup);
+
+        // Outer sacred rings (like a torus-knot halo, subtler than before)
+        const outerRingGeo = new THREE.TorusGeometry(16, 0.05, 8, 100);
+        const outerRingMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, transparent: true, opacity: 0.18 });
+        const outerRingA = new THREE.Mesh(outerRingGeo, outerRingMat);
+        const outerRingB = new THREE.Mesh(outerRingGeo, outerRingMat);
+        const outerRingC = new THREE.Mesh(outerRingGeo, outerRingMat);
+        outerRingB.rotation.x = Math.PI / 3;
+        outerRingC.rotation.x = -Math.PI / 3;
+        heroGroup.add(outerRingA, outerRingB, outerRingC);
+
+        // Slow-drifting embers around the mandala
+        const emberGeo = new THREE.BufferGeometry();
+        const emberCount = 250;
+        const emberPos = new Float32Array(emberCount * 3);
+        for (let i = 0; i < emberCount; i++) {
+            const r = 10 + Math.random() * 14;
+            const a = Math.random() * Math.PI * 2;
+            emberPos[i*3] = Math.cos(a) * r;
+            emberPos[i*3+1] = (Math.random() - 0.5) * 10;
+            emberPos[i*3+2] = Math.sin(a) * r;
+        }
+        emberGeo.setAttribute('position', new THREE.BufferAttribute(emberPos, 3));
+        const emberMat = new THREE.PointsMaterial({ size: 0.18, color: 0xE8D19A, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending });
+        const emberMesh = new THREE.Points(emberGeo, emberMat);
+        heroGroup.add(emberMesh);
 
         // --- Group 2: Vastu Grid (Architecture) ---
         const vastuGroup = new THREE.Group();
         vastuGroup.visible = false;
         scene.add(vastuGroup);
 
-        // Create a grid of blocks representing buildings/plans
         const gridHelper = new THREE.GridHelper(50, 50, 0xC9A45C, 0x333333);
         gridHelper.material.opacity = 0.2;
         gridHelper.material.transparent = true;
@@ -1041,7 +1159,7 @@
 
         const boxGeo = new THREE.BoxGeometry(1, 1, 1);
         const boxMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, wireframe: true, transparent: true, opacity: 0.3 });
-        
+        const vastuCubes = [];
         for (let i = 0; i < 20; i++) {
             const cube = new THREE.Mesh(boxGeo, boxMat);
             cube.position.set(
@@ -1051,39 +1169,130 @@
             );
             cube.scale.set(1 + Math.random(), 1 + Math.random() * 4, 1 + Math.random());
             vastuGroup.add(cube);
+            vastuCubes.push(cube);
+            // A small glowing "energy node" atop each structure
+            const node = makeGlowSprite('rgba(201,164,92,1)', 0.8);
+            node.position.set(cube.position.x, cube.position.y + (cube.scale.y / 2) + 0.4, cube.position.z);
+            vastuGroup.add(node);
         }
 
-        // --- Group 3: Astrology (Orbits) ---
+        // Compass ring marking the four directions (core Vastu concept)
+        const compassRing = new THREE.Mesh(new THREE.TorusGeometry(22, 0.04, 8, 100), new THREE.MeshBasicMaterial({ color: 0xC9A45C, transparent: true, opacity: 0.35 }));
+        compassRing.rotation.x = Math.PI / 2;
+        vastuGroup.add(compassRing);
+        const compassPoints = [];
+        [0, 1, 2, 3].forEach(i => {
+            const a = (Math.PI / 2) * i;
+            const dot = makeGlowSprite('rgba(232,209,154,1)', 1.6);
+            dot.position.set(Math.cos(a) * 22, 0, Math.sin(a) * 22);
+            vastuGroup.add(dot);
+            compassPoints.push(dot);
+        });
+
+        // --- Group 3: Astrology (Chakras + Zodiac Wheel + Orbits) ---
         const astroGroup = new THREE.Group();
         astroGroup.visible = false;
         scene.add(astroGroup);
 
-        // Orbital Rings
-        const ringGeo = new THREE.RingGeometry(4, 4.1, 64);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, side: THREE.DoubleSide, transparent: true, opacity: 0.4 });
-        
-        const ring1 = new THREE.Mesh(ringGeo, ringMat);
-        const ring2 = new THREE.Mesh(ringGeo, ringMat);
-        const ring3 = new THREE.Mesh(ringGeo, ringMat);
+        // Chakra column — seven energy centers, root to crown
+        const chakraColors = [0xff3b30, 0xff9500, 0xffe14d, 0x4de07a, 0x4db4ff, 0x4d5bff, 0xb066ff];
+        const chakraOrbs = [];
+        const chakraCount = chakraColors.length;
+        const chakraSpan = 11;
+        for (let i = 0; i < chakraCount; i++) {
+            const y = -chakraSpan / 2 + (chakraSpan / (chakraCount - 1)) * i;
+            const hex = '#' + chakraColors[i].toString(16).padStart(6, '0');
+            const glow = makeGlowSprite(hex, 2.4);
+            glow.position.set(0, y, 0);
+            astroGroup.add(glow);
+            const core = new THREE.Mesh(
+                new THREE.IcosahedronGeometry(0.35, 0),
+                new THREE.MeshBasicMaterial({ color: chakraColors[i], wireframe: true, transparent: true, opacity: 0.85 })
+            );
+            core.position.set(0, y, 0);
+            astroGroup.add(core);
+            chakraOrbs.push({ glow, core, baseY: y, phase: i * 0.7 });
+        }
+        // Vertical energy beam connecting the chakras
+        const beamGeo = new THREE.CylinderGeometry(0.015, 0.015, chakraSpan, 8, 1, true);
+        const beamMat = new THREE.MeshBasicMaterial({ color: 0xE8D19A, transparent: true, opacity: 0.25 });
+        const beam = new THREE.Mesh(beamGeo, beamMat);
+        astroGroup.add(beam);
 
+        // Zodiac wheel — outer ring with twelve glowing sign markers
+        const zodiacGroup = new THREE.Group();
+        const zodiacRing = new THREE.Mesh(new THREE.TorusGeometry(13, 0.05, 8, 120), new THREE.MeshBasicMaterial({ color: 0xC9A45C, transparent: true, opacity: 0.35 }));
+        zodiacGroup.add(zodiacRing);
+        const zodiacSymbols = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+        const zodiacMarkers = [];
+        for (let i = 0; i < 12; i++) {
+            const a = (Math.PI * 2 / 12) * i;
+            const pos = new THREE.Vector3(Math.cos(a) * 13, Math.sin(a) * 13, 0);
+            const glyph = makeGlyphSprite(zodiacSymbols[i], '#F5EFE3', 2);
+            glyph.position.copy(pos);
+            zodiacGroup.add(glyph);
+            zodiacMarkers.push(glyph);
+        }
+        zodiacGroup.rotation.x = Math.PI / 2.4;
+        astroGroup.add(zodiacGroup);
+
+        // Orbital rings with planets (deeper space, behind the chakra column)
+        const ringGeo = new THREE.RingGeometry(7, 7.05, 64);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0xC9A45C, side: THREE.DoubleSide, transparent: true, opacity: 0.3 });
+        const ring1 = new THREE.Mesh(ringGeo, ringMat);
+        const ring2 = new THREE.Mesh(new THREE.RingGeometry(9, 9.05, 64), ringMat);
+        const ring3 = new THREE.Mesh(new THREE.RingGeometry(11, 11.05, 64), ringMat);
         ring1.rotation.x = Math.PI / 2;
         ring2.rotation.x = Math.PI / 1.8;
         ring2.rotation.y = Math.PI / 6;
         ring3.rotation.x = Math.PI / 2.2;
-
         astroGroup.add(ring1, ring2, ring3);
 
-        // Planets (Simple Spheres)
-        const planetGeo = new THREE.SphereGeometry(0.5, 32, 32);
-        const planetMat = new THREE.MeshBasicMaterial({ color: 0xE8D19A });
-        
-        const p1 = new THREE.Mesh(planetGeo, planetMat);
-        const p2 = new THREE.Mesh(planetGeo, planetMat);
-        
-        // Place planets on rings
-        ring1.add(p1); p1.position.set(4, 0, 0);
-        ring2.add(p2); p2.position.set(4, 0, 0);
+        const p1 = makeGlowSprite('rgba(232,209,154,1)', 1.2);
+        const p2 = makeGlowSprite('rgba(201,164,92,1)', 1.4);
+        const p3 = makeGlowSprite('rgba(255,255,255,1)', 0.9);
+        ring1.add(p1); p1.position.set(7, 0, 0);
+        ring2.add(p2); p2.position.set(9, 0, 0);
+        ring3.add(p3); p3.position.set(11, 0, 0);
 
+        // Central sun glow behind the chakra column
+        const astroSun = makeGlowSprite('rgba(255,241,214,1)', 5);
+        astroSun.position.set(0, 0, -6);
+        astroGroup.add(astroSun);
+
+        // --- Cinematic Bloom (post-processing) ---
+        const composer = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, camera));
+        const bloomPass = new THREE.UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            0.45,   // strength
+            0.4,    // radius
+            0.35    // threshold
+        );
+        composer.addPass(bloomPass);
+
+        // --- Shooting stars (hero scene only) ---
+        function spawnShootingStar() {
+            if (!heroGroup.visible) return;
+            const star = makeGlowSprite('rgba(255,255,255,1)', 0.7);
+            const startX = -45 - Math.random() * 15;
+            const startY = 15 + Math.random() * 12;
+            star.position.set(startX, startY, -8 - Math.random() * 6);
+            heroGroup.add(star);
+            gsap.to(star.position, {
+                x: startX + 90,
+                y: startY - 35,
+                duration: 1.4 + Math.random() * 0.6,
+                ease: 'power1.in',
+                onComplete: () => {
+                    heroGroup.remove(star);
+                    star.material.map.dispose();
+                    star.material.dispose();
+                }
+            });
+            gsap.to(star.scale, { x: 0.05, y: 0.05, delay: 1.0, duration: 0.5 });
+        }
+        setInterval(() => { if (Math.random() < 0.6) spawnShootingStar(); }, 3200);
 
         // --- Camera & Animation Logic ---
         camera.position.z = 30;
@@ -1168,39 +1377,68 @@
         const clock = new THREE.Clock();
 
         function animate() {
-            const elapsedTime = clock.getElapsedTime();
+            const t = clock.getElapsedTime();
 
             targetX = mouseX * 0.001;
             targetY = mouseY * 0.001;
+
+            // Twinkling starfield (gentle global pulse + slow drift)
+            starMesh.rotation.y = t * 0.015;
+            starsMaterial.opacity = 0.55 + Math.sin(t * 0.6) * 0.15;
+            nebulaMesh.rotation.y = t * 0.006;
 
             // Mouse parallax easing
             heroGroup.rotation.y += 0.05 * (targetX - heroGroup.rotation.y);
             heroGroup.rotation.x += 0.05 * (targetY - heroGroup.rotation.x);
 
-            // Constant rotations
+            // --- Hero: sacred geometry mandala ---
             if (heroGroup.visible) {
-                mandala.rotation.z = elapsedTime * 0.05;
-                starMesh.rotation.y = elapsedTime * 0.02;
+                flowerGroup.rotation.z = t * 0.04;
+                outerRingA.rotation.z = t * 0.06;
+                outerRingB.rotation.z = -t * 0.045;
+                outerRingC.rotation.z = t * 0.03;
+                heroSun.scale.setScalar(14 + Math.sin(t * 1.2) * 1.2);
+                emberMesh.rotation.y = t * 0.03;
             }
 
+            // --- Vastu: living grid ---
             if (vastuGroup.visible) {
-                vastuGroup.rotation.y = elapsedTime * 0.1;
-                // Subtle wave effect for blocks
-                vastuGroup.children.forEach((child, i) => {
-                    if (child.type === 'Mesh') {
-                        child.rotation.x = Math.sin(elapsedTime + i) * 0.1;
-                    }
+                vastuGroup.rotation.y = t * 0.08;
+                compassRing.rotation.z = t * 0.05;
+                vastuCubes.forEach((cube, i) => {
+                    cube.rotation.x = Math.sin(t + i) * 0.1;
+                });
+                compassPoints.forEach((dot, i) => {
+                    const pulse = 1.4 + Math.sin(t * 2 + i * 1.5) * 0.5;
+                    dot.scale.setScalar(pulse);
                 });
             }
 
+            // --- Astrology: chakras + zodiac + orbits ---
             if (astroGroup.visible) {
-                ring1.rotation.z = elapsedTime * 0.2;
-                ring2.rotation.z = elapsedTime * 0.15;
-                ring3.rotation.z = elapsedTime * 0.25;
-                astroGroup.rotation.y += 0.05 * (targetX - astroGroup.rotation.y);
+                astroGroup.rotation.y += 0.04 * (targetX - astroGroup.rotation.y);
+
+                // Chakra pulse, root to crown, each glowing on its own breath
+                chakraOrbs.forEach((c, i) => {
+                    const pulse = 1 + Math.sin(t * 1.6 + c.phase) * 0.25;
+                    c.glow.scale.set(2.4 * pulse, 2.4 * pulse, 1);
+                    c.core.rotation.x = t * 0.5 + i;
+                    c.core.rotation.y = t * 0.3 + i;
+                });
+
+                zodiacGroup.rotation.z = t * 0.05;
+                zodiacMarkers.forEach((glyph, i) => {
+                    glyph.material.rotation = Math.sin(t * 0.2 + i) * 0.25;
+                });
+
+                ring1.rotation.z = t * 0.2;
+                ring2.rotation.z = t * 0.15;
+                ring3.rotation.z = t * 0.25;
+
+                astroSun.scale.setScalar(5 + Math.sin(t * 0.9) * 0.5);
             }
 
-            renderer.render(scene, camera);
+            composer.render();
             requestAnimationFrame(animate);
         }
 
@@ -1211,6 +1449,7 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
         });
 
         // --- 7. Form Handling ---
