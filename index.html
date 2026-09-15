@@ -9,7 +9,7 @@
     <!-- Fonts: Playfair Display (Serif) & Manrope (Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,13 +20,14 @@
             theme: {
                 extend: {
                     colors: {
-                        'cosmic-dark': '#080611',
-                        'cosmic-deep': '#100B20',
-                        'cosmic-purple': '#241740',
+                        'cosmic-dark': '#050203',
+                        'cosmic-deep': '#0f0a16',
+                        'cosmic-purple': '#1a0b2e',
+                        'mystic-purple': '#2d1b4e',
                         'gold-muted': '#C9A45C',
                         'gold-light': '#E5C985',
                         'ivory': '#F5F0E7',
-                        'silver': '#AAA3B5'
+                        'silver': '#A1A1AA'
                     },
                     fontFamily: {
                         serif: ['"Playfair Display"', 'serif'],
@@ -34,6 +35,7 @@
                     },
                     backgroundImage: {
                         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'cosmic-gradient': 'linear-gradient(to bottom, #050203, #0f0a16, #1a0b2e)',
                     }
                 }
             }
@@ -48,7 +50,7 @@
         }
         
         body {
-            background-color: #080611;
+            background-color: #050203;
             color: #F5F0E7;
             overflow-x: hidden;
             cursor: none; /* Custom cursor handling */
@@ -56,14 +58,14 @@
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #080611;
+            background: #050203;
         }
         ::-webkit-scrollbar-thumb {
-            background: #241740;
-            border-radius: 4px;
+            background: #2d1b4e;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #C9A45C;
@@ -82,41 +84,52 @@
         }
         
         .cursor-dot {
-            width: 5px;
-            height: 5px;
+            width: 4px;
+            height: 4px;
             background-color: #C9A45C;
         }
 
         .cursor-outline {
             width: 30px;
             height: 30px;
-            border: 1px solid rgba(201, 164, 92, 0.5);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            border: 1px solid rgba(201, 164, 92, 0.4);
+            transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
         }
 
         body:hover .cursor-outline.hovered {
             width: 50px;
             height: 50px;
-            background-color: rgba(201, 164, 92, 0.1);
+            background-color: rgba(201, 164, 92, 0.05);
             border-color: #C9A45C;
-        }
-
-        /* Typography Utilities */
-        .text-outline {
-            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
-            color: transparent;
+            backdrop-filter: blur(2px);
         }
 
         /* Loader */
         #loader {
             position: fixed;
             inset: 0;
-            background: #080611;
+            background: #050203;
             z-index: 10000;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.8s ease-out;
+            transition: opacity 1s ease-out;
+        }
+
+        .loader-symbol {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #C9A45C;
+            transform: rotate(45deg);
+            animation: spin 4s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); border-color: transparent transparent #C9A45C transparent; }
+            25% { transform: rotate(90deg); border-color: transparent transparent transparent #C9A45C; }
+            50% { transform: rotate(180deg); border-color: transparent #C9A45C transparent transparent; }
+            75% { transform: rotate(270deg); border-color: #C9A45C transparent transparent transparent; }
+            100% { transform: rotate(360deg); border-color: transparent transparent #C9A45C transparent; }
         }
 
         /* 3D Canvas */
@@ -127,41 +140,42 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.6;
+            opacity: 0.7;
             pointer-events: none;
         }
 
-        /* Utility Animations */
-        .reveal-text {
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        /* Typography Utilities */
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.15);
+            color: transparent;
         }
-
-        .char {
-            transform: translateY(100%);
-            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-
-        .gold-line {
-            width: 0;
-            transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         /* Image Masking */
-        .image-reveal-container {
+        .image-reveal-wrapper {
             overflow: hidden;
             position: relative;
         }
         
         .image-reveal-img {
-            transform: scale(1.2);
-            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+            transform: scale(1.15);
+            transition: transform 2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .image-reveal-wrapper:hover .image-reveal-img {
+            transform: scale(1);
         }
 
         /* Magnetic Button */
         .btn-magnetic {
             position: relative;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            transition: all 0.4s ease;
         }
         .btn-magnetic::before {
             content: '';
@@ -170,11 +184,44 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: 0.6s;
         }
         .btn-magnetic:hover::before {
             left: 100%;
+        }
+        
+        /* Poster Card Styling */
+        .poster-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(201, 164, 92, 0.15);
+            transition: all 0.5s ease;
+        }
+        
+        .poster-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(5,2,3,0.9), transparent);
+            opacity: 0.6;
+            transition: opacity 0.5s;
+        }
+        
+        .poster-card:hover {
+            border-color: rgba(201, 164, 92, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        }
+        
+        .poster-card:hover::after {
+            opacity: 0.3;
+        }
+
+        .poster-number {
+            font-family: 'Playfair Display', serif;
+            -webkit-text-stroke: 1px #C9A45C;
+            color: transparent;
         }
 
     </style>
@@ -183,15 +230,13 @@
 
     <!-- Loading Screen -->
     <div id="loader">
-        <div class="text-center">
-            <img src="Logo.png" alt="Divya Astro Vastu Logo" class="h-24 w-auto mb-4 mx-auto opacity-0 logo-reveal">
-            <div class="h-[1px] w-24 bg-gold-muted mx-auto overflow-hidden">
-                <div class="h-full bg-gold-light w-full animate-[loading_1.5s_ease-in-out_infinite]" style="transform: translateX(-100%);"></div>
-            </div>
+        <div class="text-center flex flex-col items-center gap-6">
+            <div class="loader-symbol"></div>
+            <p class="text-xs tracking-[0.4em] text-gold-muted uppercase">Divya Astro Vastu</p>
         </div>
     </div>
 
-    <!-- 3D Background -->
+    <!-- 3D Background (Three.js) -->
     <div id="canvas-container"></div>
 
     <!-- Custom Cursor -->
@@ -199,119 +244,126 @@
     <div class="cursor-outline"></div>
 
     <!-- Navigation -->
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-6 px-6 md:px-12 flex justify-between items-center mix-blend-difference text-ivory">
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-700 py-6 px-6 md:px-12 flex justify-between items-center mix-blend-difference text-ivory">
         <a href="#" class="relative z-50 group">
-            <img src="Logo.png" alt="Divya Astro Vastu" class="h-12 md:h-16 transition-transform duration-700 group-hover:scale-105">
+            <img src="Logo.png" alt="Divya Astro Vastu" class="h-10 md:h-14 transition-transform duration-700 group-hover:scale-105 grayscale hover:grayscale-0">
         </a>
 
         <!-- Desktop Menu -->
-        <div class="hidden md:flex items-center space-x-12 text-sm tracking-[0.2em] font-light uppercase">
+        <div class="hidden md:flex items-center space-x-10 text-xs tracking-[0.25em] font-light uppercase">
             <a href="#about" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
                 About
+                <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#expertise" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
+                Expertise
                 <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a href="#services" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
                 Services
                 <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
             </a>
-            <a href="#vastu" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
-                Vastu
-                <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
-            </a>
-            <a href="#astrology" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
-                Astrology
-                <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
-            </a>
             <a href="#contact" class="nav-link hover:text-gold-muted transition-colors duration-300 relative group">
                 Contact
                 <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold-muted transition-all duration-300 group-hover:w-full"></span>
             </a>
-            <a href="#contact" class="btn-magnetic px-6 py-3 border border-gold-muted/50 text-gold-muted hover:bg-gold-muted hover:text-cosmic-dark transition-all duration-500">
-                Book Consultation
+            <a href="#contact" class="btn-magnetic px-6 py-3 border border-gold-muted/30 text-gold-muted hover:bg-gold-muted hover:text-cosmic-dark transition-all duration-500 tracking-wider">
+                Book Now
             </a>
         </div>
 
         <!-- Mobile Hamburger -->
-        <button id="mobile-menu-btn" class="md:hidden z-50 focus:outline-none">
-            <div class="w-6 h-0.5 bg-ivory mb-1.5 transition-all duration-300"></div>
-            <div class="w-6 h-0.5 bg-ivory transition-all duration-300"></div>
+        <button id="mobile-menu-btn" class="md:hidden z-50 focus:outline-none group">
+            <div class="w-5 h-0.5 bg-ivory mb-1.5 transition-all duration-300 group-hover:bg-gold-muted"></div>
+            <div class="w-5 h-0.5 bg-ivory transition-all duration-300 group-hover:bg-gold-muted"></div>
         </button>
     </nav>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 bg-cosmic-dark/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-500 flex flex-col justify-center items-center space-y-8 text-center">
-        <a href="#about" class="mobile-link text-2xl font-serif text-ivory hover:text-gold-muted">About</a>
-        <a href="#services" class="mobile-link text-2xl font-serif text-ivory hover:text-gold-muted">Services</a>
-        <a href="#vastu" class="mobile-link text-2xl font-serif text-ivory hover:text-gold-muted">Vastu</a>
-        <a href="#astrology" class="mobile-link text-2xl font-serif text-ivory hover:text-gold-muted">Astrology</a>
-        <a href="#contact" class="mobile-link text-xl uppercase tracking-widest text-gold-muted border-b border-gold-muted pb-1">Book Consultation</a>
+    <div id="mobile-menu" class="fixed inset-0 bg-cosmic-dark/98 backdrop-blur-2xl z-40 transform translate-x-full transition-transform duration-700 flex flex-col justify-center items-center space-y-10 text-center">
+        <a href="#about" class="mobile-link text-3xl font-serif text-ivory hover:text-gold-muted transition-colors">About</a>
+        <a href="#expertise" class="mobile-link text-3xl font-serif text-ivory hover:text-gold-muted transition-colors">Expertise</a>
+        <a href="#services" class="mobile-link text-3xl font-serif text-ivory hover:text-gold-muted transition-colors">Services</a>
+        <a href="#contact" class="mobile-link text-xl uppercase tracking-[0.3em] text-gold-muted border-b border-gold-muted pb-2">Book Consultation</a>
     </div>
 
     <main>
         <!-- Hero Section -->
-        <section class="min-h-screen relative flex flex-col md:flex-row items-center justify-center pt-24 px-6 md:px-12 overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-cosmic-dark to-transparent z-0 pointer-events-none"></div>
+        <section class="min-h-screen relative flex items-center justify-center pt-24 px-6 md:px-12 lg:px-24 overflow-hidden">
+            <!-- Decorative Elements -->
+            <div class="absolute top-1/4 left-10 w-1 h-32 bg-gradient-to-b from-transparent via-gold-muted/30 to-transparent hidden lg:block"></div>
+            <div class="absolute bottom-1/4 right-10 w-1 h-32 bg-gradient-to-b from-transparent via-gold-muted/30 to-transparent hidden lg:block"></div>
             
-            <div class="w-full md:w-1/2 z-10 flex flex-col justify-center items-start space-y-8 order-2 md:order-1 mt-12 md:mt-0">
-                <div class="overflow-hidden">
-                    <p class="text-gold-muted tracking-[0.3em] text-xs md:text-sm uppercase hero-text opacity-0 translate-y-10">Ancient Wisdom • Modern Perspective</p>
-                </div>
-                
-                <div class="overflow-hidden">
-                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif leading-[0.9] text-ivory hero-text opacity-0 translate-y-10">
-                        Vastu Solutions<br>
-                        <span class="italic text-gold-muted font-light">Tailored for</span><br>
-                        Every Space
-                    </h1>
-                </div>
-
-                <div class="max-w-md text-silver font-light text-lg leading-relaxed hero-text opacity-0 translate-y-10">
-                    Dr. Jaiprakaash Dwivedi offers precise, result-oriented Vastu consultancy for residential, commercial, and institutional spaces.
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-6 pt-4 hero-text opacity-0 translate-y-10">
-                    <a href="#contact" class="btn-magnetic px-8 py-4 bg-gold-muted text-cosmic-dark font-medium tracking-wider hover:bg-gold-light transition-colors">
-                        BOOK A CONSULTATION
-                    </a>
-                    <a href="#services" class="btn-magnetic px-8 py-4 border border-white/20 text-ivory tracking-wider hover:border-gold-muted hover:text-gold-muted transition-colors">
-                        EXPLORE SERVICES
-                    </a>
-                </div>
-            </div>
-
-            <div class="w-full md:w-1/2 relative z-10 flex justify-center order-1 md:order-2">
-                <div class="relative w-[80%] md:w-[70%] aspect-[3/4] image-reveal-container hero-img opacity-0 scale-110">
-                    <!-- Abstract Golden Frame behind image -->
-                    <div class="absolute -inset-4 border border-gold-muted/20 rounded-tl-[100px] rounded-br-[100px] translate-x-4 translate-y-4"></div>
+            <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+                <!-- Text Content -->
+                <div class="flex flex-col justify-center items-start space-y-8 order-2 lg:order-1">
+                    <div class="overflow-hidden">
+                        <p class="text-gold-muted tracking-[0.4em] text-xs uppercase hero-text opacity-0 translate-y-8 font-medium">
+                            Ancient Wisdom • Modern Perspective
+                        </p>
+                    </div>
                     
-                    <img src="Pic1.png" alt="Dr. Jaiprakaash Dwivedi" class="w-full h-full object-cover shadow-2xl relative z-10 image-reveal-img">
-                    
-                    <!-- Overlay Gradient -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-cosmic-dark via-transparent to-transparent opacity-60 z-20"></div>
+                    <div class="overflow-hidden">
+                        <h1 class="text-5xl md:text-7xl font-serif leading-[1.1] text-ivory hero-text opacity-0 translate-y-8">
+                            Vastu Solutions<br>
+                            <span class="italic text-gold-muted font-light">Tailored for</span><br>
+                            Every Space
+                        </h1>
+                    </div>
+
+                    <div class="max-w-lg text-silver font-light text-lg leading-relaxed hero-text opacity-0 translate-y-8">
+                        Dr. Jaiprakaash Dwivedi offers precise, result-oriented Vastu consultancy for residential, commercial, and institutional spaces.
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-6 pt-4 hero-text opacity-0 translate-y-8">
+                        <a href="#contact" class="btn-magnetic px-8 py-4 bg-gold-muted text-cosmic-dark font-medium tracking-[0.15em] text-sm hover:bg-gold-light transition-colors text-center">
+                            BOOK A CONSULTATION
+                        </a>
+                        <a href="#expertise" class="btn-magnetic px-8 py-4 border border-white/20 text-ivory tracking-[0.15em] text-sm hover:border-gold-muted hover:text-gold-muted transition-colors text-center">
+                            EXPLORE EXPERTISE
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Image -->
+                <div class="relative flex justify-center order-1 lg:order-2">
+                    <!-- Abstract Golden Geometric Decoration -->
+                    <div class="absolute inset-0 flex items-center justify-center z-0">
+                        <div class="w-[80%] h-[90%] border border-gold-muted/10 rounded-sm transform rotate-6 scale-110 opacity-40"></div>
+                        <div class="absolute w-[70%] h-[80%] border border-gold-muted/5 rounded-sm transform -rotate-3 scale-105 opacity-30"></div>
+                    </div>
+
+                    <div class="relative w-full max-w-md aspect-[3/4.2] image-reveal-wrapper hero-img opacity-0 scale-95 z-10">
+                        <div class="absolute -inset-2 bg-gradient-to-tr from-gold-muted/20 to-mystic-purple/20 blur-xl opacity-50 z-0"></div>
+                        <img src="Pic1.png" alt="Dr. Jaiprakaash Dwivedi" class="w-full h-full object-cover relative z-10 image-reveal-img shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+                        
+                        <!-- Overlay Vignette -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-cosmic-dark via-transparent to-transparent opacity-80 z-20 pointer-events-none"></div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- About Section -->
-        <section id="about" class="py-32 px-6 md:px-12 bg-cosmic-dark relative">
-            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div class="relative reveal-on-scroll">
-                    <div class="aspect-[4/3] w-full overflow-hidden relative">
-                        <img src="Slide1.png" alt="Astrology Experience" class="w-full h-full object-cover transition-transform duration-[2s] hover:scale-105">
-                        <div class="absolute inset-0 border border-gold-muted/30 m-4"></div>
-                    </div>
-                    <!-- Floating decorative element -->
-                    <div class="absolute -bottom-10 -right-10 w-40 h-40 border border-gold-muted/10 rounded-full flex items-center justify-center animate-[spin_10s_linear_infinite]">
-                        <div class="w-32 h-32 border border-gold-muted/20 rounded-full"></div>
+        <section id="about" class="py-32 px-6 md:px-12 bg-cosmic-dark relative border-t border-white/5">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <div class="relative reveal-on-scroll order-2 lg:order-1">
+                    <div class="aspect-[4/3] w-full overflow-hidden relative border border-white/10">
+                        <img src="Slide1.png" alt="Astrology Experience" class="w-full h-full object-cover transition-transform duration-[2s] hover:scale-105 opacity-80 hover:opacity-100">
+                        <!-- Overlay Gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-cosmic-dark/60 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 border-l-2 border-gold-muted pl-4">
+                            <p class="text-ivory font-serif italic text-xl">"Unlock the Power of Vedic Wisdom"</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="reveal-on-scroll">
-                    <span class="text-gold-muted text-sm tracking-[0.3em] uppercase block mb-6">About Divya Astro Vastu</span>
+                <div class="reveal-on-scroll order-1 lg:order-2">
+                    <span class="text-gold-muted text-xs tracking-[0.3em] uppercase block mb-6">About Divya Astro Vastu</span>
                     <h2 class="text-4xl md:text-5xl font-serif text-ivory mb-8 leading-tight">
                         Unlock the Power of Vedic Wisdom for Modern Life
                     </h2>
-                    <div class="w-16 h-[1px] bg-gold-muted mb-8"></div>
+                    <div class="w-12 h-[1px] bg-gold-muted mb-8"></div>
                     <p class="text-silver text-lg leading-relaxed mb-6 font-light">
                         We merge ancient Vedic wisdom with modern scientific insights for transformative solutions that bring clarity, harmony, and success in personal and professional life.
                     </p>
@@ -322,90 +374,140 @@
             </div>
         </section>
 
-        <!-- Acharya Section -->
-        <section class="py-32 px-6 md:px-12 bg-[#0D0918] relative overflow-hidden">
-            <!-- Background Glow -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cosmic-purple/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <!-- POSTER SECTION: ASTROLOGY / VASTU / NUMEROLOGY -->
+        <section id="expertise" class="py-32 px-6 md:px-12 bg-cosmic-deep relative overflow-hidden">
+            <!-- Section Header -->
+            <div class="max-w-7xl mx-auto mb-20 text-center reveal-on-scroll">
+                <span class="text-gold-muted text-xs tracking-[0.4em] uppercase">Domains of Expertise</span>
+                <h2 class="text-4xl md:text-6xl font-serif text-ivory mt-4">Guidance Through the Cosmos</h2>
+            </div>
+
+            <!-- The 3 Posters Grid -->
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Poster 01: ASTROLOGY -->
+                <div class="group poster-card h-[500px] relative reveal-on-scroll">
+                    <img src="Slide1.png" alt="Astrology Poster" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 z-10 mix-blend-multiply"></div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <span class="poster-number text-4xl mb-2 block opacity-50 group-hover:opacity-100 transition-opacity">01</span>
+                        <h3 class="text-3xl font-serif text-ivory mb-2 border-b border-gold-muted/50 inline-block pb-1">ASTROLOGY</h3>
+                        <p class="text-silver/80 text-sm font-light tracking-wide mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                            Navigate life with celestial insight.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Poster 02: VASTU -->
+                <div class="group poster-card h-[500px] relative reveal-on-scroll">
+                    <img src="Slide2.png" alt="Vastu Poster" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 z-10 mix-blend-multiply"></div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <span class="poster-number text-4xl mb-2 block opacity-50 group-hover:opacity-100 transition-opacity">02</span>
+                        <h3 class="text-3xl font-serif text-ivory mb-2 border-b border-gold-muted/50 inline-block pb-1">VASTU</h3>
+                        <p class="text-silver/80 text-sm font-light tracking-wide mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                            Spatial harmony for prosperity.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Poster 03: NUMEROLOGY -->
+                <div class="group poster-card h-[500px] relative reveal-on-scroll">
+                    <img src="Slide3.png" alt="Numerology Poster" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 z-10 mix-blend-multiply"></div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <span class="poster-number text-4xl mb-2 block opacity-50 group-hover:opacity-100 transition-opacity">03</span>
+                        <h3 class="text-3xl font-serif text-ivory mb-2 border-b border-gold-muted/50 inline-block pb-1">NUMEROLOGY</h3>
+                        <p class="text-silver/80 text-sm font-light tracking-wide mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                            Unlocking the numbers of destiny.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Acharya / Bio Section -->
+        <section class="py-32 px-6 md:px-12 bg-cosmic-dark relative border-t border-white/5">
+            <!-- Subtle Background Glow -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cosmic-purple/10 rounded-full blur-[100px] pointer-events-none"></div>
 
             <div class="max-w-4xl mx-auto text-center relative z-10 reveal-on-scroll">
-                <div class="w-[1px] h-24 bg-gold-muted mx-auto mb-8"></div>
+                <div class="w-[1px] h-20 bg-gradient-to-b from-transparent to-gold-muted mx-auto mb-10"></div>
                 
-                <h2 class="text-silver tracking-[0.3em] text-sm uppercase mb-4">Meet The Expert</h2>
-                <h3 class="text-4xl md:text-6xl font-serif text-ivory mb-2">
+                <h2 class="text-silver tracking-[0.35em] text-xs uppercase mb-6">Meet The Expert</h2>
+                <h3 class="text-4xl md:text-6xl font-serif text-ivory mb-4">
                     Dr. Jaiprakaash Dwivedi
                 </h3>
-                <p class="text-gold-muted italic text-xl mb-6">
+                <p class="text-gold-muted italic text-xl mb-8 font-serif">
                     Modern Astrology Expert & Professional Vastu Consultant
                 </p>
-                <p class="text-xl text-ivory font-light mb-12">
+                <p class="text-2xl text-ivory font-light mb-12 tracking-widest">
                     Ph.D. (Japan)
                 </p>
 
-                <div class="block text-xl md:text-2xl font-serif text-gold-muted/80">
+                <div class="block text-xl md:text-2xl font-serif text-gold-muted/80 border-t border-b border-white/10 py-6 inline-block px-12">
                     डॉ.जयप्रकाश द्विवेदी
                 </div>
             </div>
         </section>
 
-        <!-- Services Section -->
-        <section id="services" class="py-32 px-6 md:px-12 bg-cosmic-dark">
+        <!-- Services Section (Detailed List) -->
+        <section id="services" class="py-32 px-6 md:px-12 bg-[#08060d]">
             <div class="max-w-7xl mx-auto">
-                <div class="mb-20 reveal-on-scroll">
-                    <span class="text-gold-muted text-sm tracking-[0.3em] uppercase">Our Expertise</span>
-                    <h2 class="text-4xl md:text-5xl font-serif text-ivory mt-4">What Services We Are Providing</h2>
+                <div class="flex flex-col md:flex-row justify-between items-end mb-20 reveal-on-scroll">
+                    <div>
+                        <span class="text-gold-muted text-xs tracking-[0.35em] uppercase">Our Expertise</span>
+                        <h2 class="text-4xl md:text-5xl font-serif text-ivory mt-4">What Services We Are Providing</h2>
+                    </div>
+                    <div class="hidden md:block w-32 h-[1px] bg-gold-muted/30 ml-8"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-gold-muted/10 border border-gold-muted/10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 border border-white/5">
                     <!-- Service Item -->
-                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
-                            <span class="text-6xl font-serif text-gold-muted">01</span>
-                        </div>
+                    <div class="service-card glass-panel p-10 hover:bg-white/5 transition-colors duration-500 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 font-serif text-6xl text-gold-muted group-hover:opacity-20 transition-opacity">01</div>
                         <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Residential & Commercial Vastu</h3>
                         <p class="text-silver font-light leading-relaxed">Comprehensive analysis to ensure harmony and prosperity in your living and working environments.</p>
                     </div>
 
                     <!-- Service Item -->
-                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
-                            <span class="text-6xl font-serif text-gold-muted">02</span>
-                        </div>
+                    <div class="service-card glass-panel p-10 hover:bg-white/5 transition-colors duration-500 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 font-serif text-6xl text-gold-muted group-hover:opacity-20 transition-opacity">02</div>
                         <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Project-Based Vastu</h3>
                         <p class="text-silver font-light leading-relaxed">Specialized consultancy for architecture and interior projects, integrated from the blueprint stage.</p>
                     </div>
 
                     <!-- Service Item -->
-                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
-                            <span class="text-6xl font-serif text-gold-muted">03</span>
-                        </div>
+                    <div class="service-card glass-panel p-10 hover:bg-white/5 transition-colors duration-500 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 font-serif text-6xl text-gold-muted group-hover:opacity-20 transition-opacity">03</div>
                         <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Personalized Horoscope</h3>
                         <p class="text-silver font-light leading-relaxed">Deep dive into your birth chart to uncover potential, challenges, and life's purpose.</p>
                     </div>
 
                     <!-- Service Item -->
-                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
-                            <span class="text-6xl font-serif text-gold-muted">04</span>
-                        </div>
+                    <div class="service-card glass-panel p-10 hover:bg-white/5 transition-colors duration-500 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 font-serif text-6xl text-gold-muted group-hover:opacity-20 transition-opacity">04</div>
                         <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Career, Finance & Marriage</h3>
                         <p class="text-silver font-light leading-relaxed">Focused guidance on critical life aspects including career growth, financial stability, and marital compatibility.</p>
                     </div>
 
                     <!-- Service Item -->
-                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
-                            <span class="text-6xl font-serif text-gold-muted">05</span>
-                        </div>
+                    <div class="service-card glass-panel p-10 hover:bg-white/5 transition-colors duration-500 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 font-serif text-6xl text-gold-muted group-hover:opacity-20 transition-opacity">05</div>
                         <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Muhurat Selection</h3>
                         <p class="text-silver font-light leading-relaxed">Auspicious timing for important events like weddings, business launches, and property purchases.</p>
                     </div>
 
                     <!-- Service Item -->
-                    <div class="service-card group bg-cosmic-dark p-10 hover:bg-[#0D0918] transition-colors duration-500 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity">
-                            <span class="text-6xl font-serif text-gold-muted">06</span>
-                        </div>
+                    <div class="service-card glass-panel p-10 hover:bg-white/5 transition-colors duration-500 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 font-serif text-6xl text-gold-muted group-hover:opacity-20 transition-opacity">06</div>
                         <h3 class="text-2xl font-serif text-ivory mb-4 group-hover:text-gold-muted transition-colors">Online Consultation</h3>
                         <p class="text-silver font-light leading-relaxed">Accessible guidance worldwide via secure online video consultations and digital reports.</p>
                     </div>
@@ -413,139 +515,139 @@
             </div>
         </section>
 
-        <!-- Vastu Section -->
-        <section id="vastu" class="py-32 px-6 md:px-12 bg-[#0D0918] relative">
+        <!-- Vastu Details Section -->
+        <section id="vastu-details" class="py-32 px-6 md:px-12 bg-cosmic-dark border-t border-white/5 relative">
              <div class="max-w-7xl mx-auto">
                  <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-on-scroll">
                      <div>
-                         <span class="text-gold-muted text-sm tracking-[0.3em] uppercase">Spatial Harmony</span>
+                         <span class="text-gold-muted text-xs tracking-[0.35em] uppercase">Spatial Harmony</span>
                          <h2 class="text-4xl md:text-5xl font-serif text-ivory mt-4">Vastu for Every Kind of Space</h2>
                      </div>
-                     <p class="text-silver max-w-sm mt-6 md:mt-0 text-right font-light">
+                     <p class="text-silver max-w-sm mt-6 md:mt-0 text-right font-light text-sm leading-relaxed">
                         Scientific Vastu analysis to optimize energy flow for specific environments.
                      </p>
                  </div>
 
                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-                     <div class="border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
-                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">RESIDENTIAL</span>
-                         <h4 class="text-xl font-serif text-ivory">Multi-story Buildings & Independent Houses</h4>
+                     <div class="border-t border-white/10 pt-6 hover:pt-8 transition-all duration-300 group cursor-pointer">
+                         <span class="block text-ivory/30 text-xs font-light mb-2 tracking-widest group-hover:text-gold-muted transition-colors">RESIDENTIAL</span>
+                         <h4 class="text-lg font-serif text-ivory">Multi-story Buildings & Independent Houses</h4>
                      </div>
-                     <div class="border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
-                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">COMMERCIAL</span>
-                         <h4 class="text-xl font-serif text-ivory">Offices, Shops & Malls</h4>
+                     <div class="border-t border-white/10 pt-6 hover:pt-8 transition-all duration-300 group cursor-pointer">
+                         <span class="block text-ivory/30 text-xs font-light mb-2 tracking-widest group-hover:text-gold-muted transition-colors">COMMERCIAL</span>
+                         <h4 class="text-lg font-serif text-ivory">Offices, Shops & Malls</h4>
                      </div>
-                     <div class="border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
-                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">INSTITUTIONAL</span>
-                         <h4 class="text-xl font-serif text-ivory">Hospitals, Schools & Colleges</h4>
+                     <div class="border-t border-white/10 pt-6 hover:pt-8 transition-all duration-300 group cursor-pointer">
+                         <span class="block text-ivory/30 text-xs font-light mb-2 tracking-widest group-hover:text-gold-muted transition-colors">INSTITUTIONAL</span>
+                         <h4 class="text-lg font-serif text-ivory">Hospitals, Schools & Colleges</h4>
                      </div>
-                     <div class="border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
-                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">HOSPITALITY</span>
-                         <h4 class="text-xl font-serif text-ivory">Hotels & Restaurants</h4>
+                     <div class="border-t border-white/10 pt-6 hover:pt-8 transition-all duration-300 group cursor-pointer">
+                         <span class="block text-ivory/30 text-xs font-light mb-2 tracking-widest group-hover:text-gold-muted transition-colors">HOSPITALITY</span>
+                         <h4 class="text-lg font-serif text-ivory">Hotels & Restaurants</h4>
                      </div>
-                     <div class="col-span-2 border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
-                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">INDUSTRIAL</span>
-                         <h4 class="text-xl font-serif text-ivory">Factories & Manufacturing Units</h4>
+                     <div class="col-span-2 border-t border-white/10 pt-6 hover:pt-8 transition-all duration-300 group cursor-pointer">
+                         <span class="block text-ivory/30 text-xs font-light mb-2 tracking-widest group-hover:text-gold-muted transition-colors">INDUSTRIAL</span>
+                         <h4 class="text-lg font-serif text-ivory">Factories & Manufacturing Units</h4>
                      </div>
-                     <div class="col-span-2 border-t border-gold-muted/30 pt-4 hover:pt-6 transition-all duration-300 group cursor-crosshair">
-                         <span class="block text-ivory/50 text-sm font-light mb-2 group-hover:text-gold-muted transition-colors">NEW CONSTRUCTION</span>
-                         <h4 class="text-xl font-serif text-ivory">Site Selection & Blueprint Correction</h4>
+                     <div class="col-span-2 border-t border-white/10 pt-6 hover:pt-8 transition-all duration-300 group cursor-pointer">
+                         <span class="block text-ivory/30 text-xs font-light mb-2 tracking-widest group-hover:text-gold-muted transition-colors">NEW CONSTRUCTION</span>
+                         <h4 class="text-lg font-serif text-ivory">Site Selection & Blueprint Correction</h4>
                      </div>
                  </div>
              </div>
         </section>
 
-        <!-- Astrology / Horoscope / Consultation Combined Section -->
-        <section id="astrology" class="py-32 px-6 md:px-12 bg-cosmic-dark relative overflow-hidden">
+        <!-- Deep Consultation Section (Astrology) -->
+        <section id="astrology-details" class="py-32 px-6 md:px-12 bg-[#0f0a16] relative overflow-hidden">
             <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-cosmic-purple/10 to-transparent pointer-events-none"></div>
 
             <div class="max-w-7xl mx-auto">
                 <!-- Subsection 1: Guidance -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-32 reveal-on-scroll">
                     <div>
-                         <span class="text-gold-muted text-sm tracking-[0.3em] uppercase block mb-6">Guidance Through the Stars</span>
+                         <span class="text-gold-muted text-xs tracking-[0.35em] uppercase block mb-6">Guidance Through the Stars</span>
                         <h2 class="text-4xl font-serif text-ivory mb-6 leading-tight">Navigate Life with Celestial Insight</h2>
                         <p class="text-silver font-light text-lg leading-relaxed mb-6">
                             Our astrology services provide clarity in times of confusion. From birth chart analysis to specific predictions about career and relationships, we offer responsible guidance based on Vedic principles.
                         </p>
                         <ul class="space-y-4 text-silver font-light">
-                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-gold-muted rounded-full mr-3"></span>Personalized Horoscope Reading</li>
-                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-gold-muted rounded-full mr-3"></span>Career & Financial Guidance</li>
-                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-gold-muted rounded-full mr-3"></span>Marriage & Relationship Compatibility</li>
+                            <li class="flex items-center"><span class="w-1 h-1 bg-gold-muted rounded-full mr-3"></span>Personalized Horoscope Reading</li>
+                            <li class="flex items-center"><span class="w-1 h-1 bg-gold-muted rounded-full mr-3"></span>Career & Financial Guidance</li>
+                            <li class="flex items-center"><span class="w-1 h-1 bg-gold-muted rounded-full mr-3"></span>Marriage & Relationship Compatibility</li>
                         </ul>
                     </div>
                     <div class="relative">
-                        <img src="Slide2.png" alt="Horoscope Analysis" class="w-full shadow-2xl border border-white/5 relative z-10">
+                        <img src="Slide2.png" alt="Horoscope Analysis" class="w-full shadow-2xl border border-white/5 relative z-10 opacity-90 hover:opacity-100 transition-opacity">
                         <!-- Decorative Backing -->
-                        <div class="absolute inset-0 border border-gold-muted/30 translate-x-4 translate-y-4 -z-10"></div>
+                        <div class="absolute inset-0 border border-gold-muted/20 translate-x-4 translate-y-4 -z-10 opacity-50"></div>
                     </div>
                 </div>
 
                 <!-- Subsection 2: Deep Consultation -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center reveal-on-scroll">
                     <div class="order-2 md:order-1 relative">
-                         <img src="Slide3.png" alt="Consultation" class="w-full shadow-2xl border border-white/5 grayscale hover:grayscale-0 transition-all duration-700">
+                         <img src="Slide3.png" alt="Consultation" class="w-full shadow-2xl border border-white/5 grayscale hover:grayscale-0 transition-all duration-700 opacity-80">
                     </div>
                     <div class="order-1 md:order-2">
-                        <span class="text-gold-muted text-sm tracking-[0.3em] uppercase block mb-6">Personalized Consultation</span>
+                        <span class="text-gold-muted text-xs tracking-[0.35em] uppercase block mb-6">Personalized Consultation</span>
                         <h2 class="text-4xl font-serif text-ivory mb-6 leading-tight">Addressing Personal Challenges</h2>
                         <p class="text-silver font-light text-lg leading-relaxed mb-8">
                             Every individual faces unique challenges. Through detailed astrological analysis, we identify the root causes of obstacles and suggest practical remedies to mitigate negative influences and enhance positive outcomes.
                         </p>
-                        <a href="#contact" class="inline-block border-b border-gold-muted pb-1 text-gold-muted hover:text-ivory hover:border-ivory transition-colors">Book Your Session</a>
+                        <a href="#contact" class="inline-block border-b border-gold-muted pb-1 text-gold-muted hover:text-ivory hover:border-ivory transition-colors tracking-wider text-sm">Book Your Session</a>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Process Section -->
-        <section class="py-32 px-6 md:px-12 bg-[#0D0918]">
+        <section class="py-32 px-6 md:px-12 bg-cosmic-dark border-t border-white/5">
             <div class="max-w-5xl mx-auto">
-                <div class="text-center mb-20 reveal-on-scroll">
+                <div class="text-center mb-24 reveal-on-scroll">
                     <h2 class="text-4xl md:text-5xl font-serif text-ivory">Our Working Process</h2>
                 </div>
 
                 <div class="relative">
                     <!-- Vertical Line -->
-                    <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-gold-muted/50 to-transparent hidden md:block"></div>
+                    <div class="absolute left-0 md:left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-gold-muted/30 to-transparent"></div>
 
                     <!-- Step 1 -->
-                    <div class="flex flex-col md:flex-row justify-between items-center mb-16 reveal-on-scroll">
-                        <div class="md:w-5/12 text-right pr-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-20 reveal-on-scroll">
+                        <div class="md:w-5/12 text-right pr-0 md:pr-12 pb-8 md:pb-0">
                             <h3 class="text-2xl font-serif text-gold-muted mb-2">01. Understand</h3>
-                            <p class="text-silver font-light">We begin by listening. Understanding your concerns, requirements, and the specific context of your query or space.</p>
+                            <p class="text-silver font-light text-sm">We begin by listening. Understanding your concerns, requirements, and the specific context of your query or space.</p>
                         </div>
-                        <div class="w-8 h-8 rounded-full bg-cosmic-dark border-2 border-gold-muted z-10 hidden md:block"></div>
-                        <div class="md:w-5/12 pl-8"></div>
+                        <div class="w-4 h-4 rounded-full bg-cosmic-dark border border-gold-muted z-10 shadow-[0_0_10px_rgba(201,164,92,0.5)]"></div>
+                        <div class="md:w-5/12 pl-0 md:pl-12 pt-8 md:pt-0"></div>
                     </div>
 
                     <!-- Step 2 -->
-                    <div class="flex flex-col md:flex-row justify-between items-center mb-16 reveal-on-scroll">
-                        <div class="md:w-5/12 pr-8"></div>
-                        <div class="w-8 h-8 rounded-full bg-cosmic-dark border-2 border-gold-muted z-10 hidden md:block"></div>
-                        <div class="md:w-5/12 text-left pl-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-20 reveal-on-scroll">
+                        <div class="md:w-5/12 pr-0 md:pr-12 pb-8 md:pb-0"></div>
+                        <div class="w-4 h-4 rounded-full bg-cosmic-dark border border-gold-muted z-10 shadow-[0_0_10px_rgba(201,164,92,0.5)]"></div>
+                        <div class="md:w-5/12 text-left pl-0 md:pl-12 pt-8 md:pt-0">
                             <h3 class="text-2xl font-serif text-gold-muted mb-2">02. Analyze</h3>
-                            <p class="text-silver font-light">Analyzing the relevant details using complex Vastu principles and/or astrological calculations based on your birth chart.</p>
+                            <p class="text-silver font-light text-sm">Analyzing the relevant details using complex Vastu principles and/or astrological calculations based on your birth chart.</p>
                         </div>
                     </div>
 
                     <!-- Step 3 -->
-                    <div class="flex flex-col md:flex-row justify-between items-center mb-16 reveal-on-scroll">
-                        <div class="md:w-5/12 text-right pr-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-20 reveal-on-scroll">
+                        <div class="md:w-5/12 text-right pr-0 md:pr-12 pb-8 md:pb-0">
                             <h3 class="text-2xl font-serif text-gold-muted mb-2">03. Recommend</h3>
-                            <p class="text-silver font-light">Providing clear, actionable, and personalized solutions. No generic advice—only what works for your unique situation.</p>
+                            <p class="text-silver font-light text-sm">Providing clear, actionable, and personalized solutions. No generic advice—only what works for your unique situation.</p>
                         </div>
-                        <div class="w-8 h-8 rounded-full bg-cosmic-dark border-2 border-gold-muted z-10 hidden md:block"></div>
-                        <div class="md:w-5/12 pl-8"></div>
+                        <div class="w-4 h-4 rounded-full bg-cosmic-dark border border-gold-muted z-10 shadow-[0_0_10px_rgba(201,164,92,0.5)]"></div>
+                        <div class="md:w-5/12 pl-0 md:pl-12 pt-8 md:pt-0"></div>
                     </div>
 
                     <!-- Step 4 -->
                     <div class="flex flex-col md:flex-row justify-between items-center reveal-on-scroll">
-                        <div class="md:w-5/12 pr-8"></div>
-                        <div class="w-8 h-8 rounded-full bg-cosmic-dark border-2 border-gold-muted z-10 hidden md:block"></div>
-                        <div class="md:w-5/12 text-left pl-8">
+                        <div class="md:w-5/12 pr-0 md:pr-12 pb-8 md:pb-0"></div>
+                        <div class="w-4 h-4 rounded-full bg-cosmic-dark border border-gold-muted z-10 shadow-[0_0_10px_rgba(201,164,92,0.5)]"></div>
+                        <div class="md:w-5/12 text-left pl-0 md:pl-12 pt-8 md:pt-0">
                             <h3 class="text-2xl font-serif text-gold-muted mb-2">04. Guide</h3>
-                            <p class="text-silver font-light">Offering ongoing guidance and support where appropriate to ensure the remedies are implemented correctly.</p>
+                            <p class="text-silver font-light text-sm">Offering ongoing guidance and support where appropriate to ensure the remedies are implemented correctly.</p>
                         </div>
                     </div>
                 </div>
@@ -553,89 +655,90 @@
         </section>
 
         <!-- Experience / Global Reach -->
-        <section class="py-32 px-6 md:px-12 bg-cosmic-dark text-center">
-            <div class="max-w-4xl mx-auto mb-20 reveal-on-scroll">
+        <section class="py-32 px-6 md:px-12 bg-[#0a0810] text-center relative overflow-hidden">
+            <div class="max-w-4xl mx-auto mb-20 relative z-10 reveal-on-scroll">
                 <h2 class="text-4xl md:text-5xl font-serif text-ivory mb-8">Experience Built Through Practice</h2>
-                <p class="text-silver text-xl font-light">
+                <p class="text-silver text-lg font-light">
                     10+ years of professional experience serving Homes, Offices, Commercial Spaces, and Individuals globally.
                 </p>
             </div>
 
             <!-- Trust Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto reveal-on-scroll">
-                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto relative z-10 reveal-on-scroll">
+                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500 bg-white/[0.01]">
                     <div class="text-3xl font-serif text-gold-muted mb-2">10+</div>
-                    <div class="text-xs tracking-widest text-silver uppercase">Years Experience</div>
+                    <div class="text-[10px] tracking-[0.2em] text-silver uppercase">Years Experience</div>
                 </div>
-                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500">
+                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500 bg-white/[0.01]">
                     <div class="text-3xl font-serif text-gold-muted mb-2">Global</div>
-                    <div class="text-xs tracking-widest text-silver uppercase">Client Reach</div>
+                    <div class="text-[10px] tracking-[0.2em] text-silver uppercase">Client Reach</div>
                 </div>
-                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500">
+                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500 bg-white/[0.01]">
                     <div class="text-3xl font-serif text-gold-muted mb-2">Ethical</div>
-                    <div class="text-xs tracking-widest text-silver uppercase">Confidential Approach</div>
+                    <div class="text-[10px] tracking-[0.2em] text-silver uppercase">Confidential Approach</div>
                 </div>
-                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500">
+                <div class="p-6 border border-white/5 hover:border-gold-muted/30 transition-colors duration-500 bg-white/[0.01]">
                     <div class="text-3xl font-serif text-gold-muted mb-2">Ph.D</div>
-                    <div class="text-xs tracking-widest text-silver uppercase">Qualified Expert</div>
+                    <div class="text-[10px] tracking-[0.2em] text-silver uppercase">Qualified Expert</div>
                 </div>
             </div>
 
-            <!-- World Map Visualization (CSS Approximation) -->
+            <!-- World Map Visualization -->
             <div class="mt-24 relative w-full max-w-5xl mx-auto min-h-[320px] md:min-h-[380px] opacity-80 reveal-on-scroll overflow-hidden">
 
-    <!-- World Map -->
-    <div class="relative w-full flex justify-center items-center">
-        <img
-            src="Worldmap.png"
-            alt="Divya Astro Vastu global reach"
-            class="w-full max-w-[1000px] h-auto object-contain opacity-40 brightness-125 contrast-75"
-        >
+                <!-- World Map -->
+                <div class="relative w-full flex justify-center items-center">
+                    <img
+                        src="Worldmap.png"
+                        alt="Divya Astro Vastu global reach"
+                        class="w-full max-w-[1000px] h-auto object-contain opacity-30 brightness-125 contrast-75 mix-blend-screen"
+                    >
 
-       <!-- Global Location Points -->
-<div class="absolute inset-0 pointer-events-none">
+                   <!-- Global Location Points -->
+    <div class="absolute inset-0 pointer-events-none">
 
-    <!-- USA -->
-    <div class="absolute left-[15.5%] top-[40%] -translate-x-1/2 -translate-y-1/2">
-        <span class="block w-2 h-2 rounded-full bg-gold-muted shadow-[0_0_15px_4px_rgba(201,164,92,0.7)] animate-pulse"></span>
+        <!-- USA -->
+        <div class="absolute left-[15.5%] top-[40%] -translate-x-1/2 -translate-y-1/2">
+            <span class="block w-2 h-2 rounded-full bg-gold-muted shadow-[0_0_15px_4px_rgba(201,164,92,0.7)] animate-pulse"></span>
+        </div>
+
+        <!-- EUROPE -->
+        <div class="absolute left-[48.5%] top-[31%] -translate-x-1/2 -translate-y-1/2">
+            <span class="block w-1.5 h-1.5 rounded-full bg-gold-muted shadow-[0_0_12px_3px_rgba(201,164,92,0.6)] animate-pulse"></span>
+        </div>
+
+        <!-- MIDDLE EAST -->
+        <div class="absolute left-[58.5%] top-[43%] -translate-x-1/2 -translate-y-1/2">
+            <span class="block w-1.5 h-1.5 rounded-full bg-gold-muted shadow-[0_0_12px_3px_rgba(201,164,92,0.6)] animate-pulse"></span>
+        </div>
+
+        <!-- INDIA - MAIN ORIGIN -->
+        <div class="absolute left-[66.8%] top-[54%] -translate-x-1/2 -translate-y-1/2">
+            <span class="absolute -inset-3 rounded-full border border-gold-muted/40 animate-ping"></span>
+            <span class="relative block w-3 h-3 rounded-full bg-gold-light shadow-[0_0_25px_8px_rgba(229,201,133,0.8)]"></span>
+        </div>
+
+        <!-- JAPAN -->
+        <div class="absolute left-[78.5%] top-[41%] -translate-x-1/2 -translate-y-1/2">
+            <span class="block w-2 h-2 rounded-full bg-gold-muted shadow-[0_0_15px_4px_rgba(201,164,92,0.7)] animate-pulse"></span>
+        </div>
+
     </div>
-
-    <!-- EUROPE -->
-    <div class="absolute left-[48.5%] top-[31%] -translate-x-1/2 -translate-y-1/2">
-        <span class="block w-1.5 h-1.5 rounded-full bg-gold-muted shadow-[0_0_12px_3px_rgba(201,164,92,0.6)] animate-pulse"></span>
-    </div>
-
-    <!-- MIDDLE EAST -->
-    <div class="absolute left-[58.5%] top-[43%] -translate-x-1/2 -translate-y-1/2">
-        <span class="block w-1.5 h-1.5 rounded-full bg-gold-muted shadow-[0_0_12px_3px_rgba(201,164,92,0.6)] animate-pulse"></span>
-    </div>
-
-    <!-- INDIA - MAIN ORIGIN -->
-    <div class="absolute left-[66.8%] top-[54%] -translate-x-1/2 -translate-y-1/2">
-        <span class="absolute -inset-3 rounded-full border border-gold-muted/40 animate-ping"></span>
-        <span class="relative block w-3 h-3 rounded-full bg-gold-light shadow-[0_0_25px_8px_rgba(229,201,133,0.8)]"></span>
-    </div>
-
-    <!-- JAPAN -->
-    <div class="absolute left-[78.5%] top-[41%] -translate-x-1/2 -translate-y-1/2">
-        <span class="block w-2 h-2 rounded-full bg-gold-muted shadow-[0_0_15px_4px_rgba(201,164,92,0.7)] animate-pulse"></span>
-    </div>
-
-</div>
         
 
-    <!-- Caption -->
-    <div class="absolute bottom-2 left-0 w-full text-center">
-        <div class="text-xs tracking-[0.35em] text-gold-muted uppercase">
-            Serving Clients Worldwide
-        </div>
-    </div>
+                <!-- Caption -->
+                <div class="absolute bottom-2 left-0 w-full text-center">
+                    <div class="text-[10px] tracking-[0.4em] text-gold-muted uppercase">
+                        Serving Clients Worldwide
+                    </div>
+                </div>
 
-</div>
+            </div>
+        </section>
 
         <!-- Quote Section -->
-        <section class="py-32 px-6 relative overflow-hidden flex items-center justify-center">
-            <div class="absolute inset-0 bg-gradient-to-r from-cosmic-purple via-cosmic-dark to-cosmic-purple opacity-50"></div>
+        <section class="py-32 px-6 relative overflow-hidden flex items-center justify-center border-t border-white/5">
+            <div class="absolute inset-0 bg-gradient-to-r from-cosmic-purple via-cosmic-dark to-cosmic-purple opacity-30"></div>
             <div class="relative z-10 text-center max-w-4xl mx-auto">
                 <h2 class="text-3xl md:text-5xl lg:text-6xl font-serif text-ivory italic leading-tight reveal-on-scroll">
                     "Ancient wisdom, thoughtfully applied to modern life."
@@ -652,94 +755,91 @@
                         Whether you are looking for Vastu consultation for a new project or seeking astrological guidance, we are here to assist you.
                     </p>
                     
-                    <div class="space-y-8 text-silver font-light">
-                        <div class="flex items-start">
-                            <div class="w-12 h-12 border border-gold-muted/30 flex items-center justify-center mr-6 mt-1">
-                                <span class="text-gold-muted">📍</span>
+                    <div class="space-y-10 text-silver font-light">
+                        <div class="flex items-start group">
+                            <div class="w-10 h-10 border border-gold-muted/20 flex items-center justify-center mr-6 mt-1 group-hover:border-gold-muted transition-colors">
+                                <span class="text-gold-muted text-sm">📍</span>
                             </div>
                             <div>
-                                <h4 class="text-ivory mb-2">Location</h4>
-                                <p>TF-307, Shyam Resi cum Plaza, Waghodia Rd,<br>above SBI Branch, Near Parivar Char Rasta,<br>Sarthi Nagar 2, Kendranagar, Vadodara,<br>Gujarat 390019, India</p>
+                                <h4 class="text-ivory mb-2 text-sm tracking-widest uppercase">Location</h4>
+                                <p class="text-base">TF-307, Shyam Resi cum Plaza, Waghodia Rd,<br>above SBI Branch, Near Parivar Char Rasta,<br>Sarthi Nagar 2, Kendranagar, Vadodara,<br>Gujarat 390019, India</p>
                             </div>
                         </div>
-                        <div class="flex items-start">
-                            <div class="w-12 h-12 border border-gold-muted/30 flex items-center justify-center mr-6 mt-1">
-                                <span class="text-gold-muted">✉</span>
+                        <div class="flex items-start group">
+                            <div class="w-10 h-10 border border-gold-muted/20 flex items-center justify-center mr-6 mt-1 group-hover:border-gold-muted transition-colors">
+                                <span class="text-gold-muted text-sm">✉</span>
                             </div>
                             <div>
-                                <h4 class="text-ivory mb-2">Email</h4>
+                                <h4 class="text-ivory mb-2 text-sm tracking-widest uppercase">Email</h4>
                                 <p><a href="mailto:divyaastrovastu@gmail.com" class="hover:text-gold-muted transition-colors">divyaastrovastu@gmail.com</a></p>
                             </div>
                         </div>
-                        <div class="flex items-start">
-                            <div class="w-12 h-12 border border-gold-muted/30 flex items-center justify-center mr-6 mt-1">
-                                <span class="text-gold-muted">📞</span>
+                        <div class="flex items-start group">
+                            <div class="w-10 h-10 border border-gold-muted/20 flex items-center justify-center mr-6 mt-1 group-hover:border-gold-muted transition-colors">
+                                <span class="text-gold-muted text-sm">📞</span>
                             </div>
                             <div>
-                                <h4 class="text-ivory mb-2">Phone</h4>
+                                <h4 class="text-ivory mb-2 text-sm tracking-widest uppercase">Phone</h4>
                                 <p><a href="tel:+919958752510" class="hover:text-gold-muted transition-colors">+91 99587 52510</a></p>
-                                <p class="text-sm mt-1 text-ivory/50">Monday - Friday, 7am - 5pm</p>
+                                <p class="text-xs mt-2 text-ivory/40">Monday - Friday, 7am - 5pm</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Social Links -->
-                    <div class="flex space-x-6 mt-12">
-                        <a href="https://www.facebook.com/share/1AXM9TbnY1/" target="_blank" class="w-10 h-10 border border-white/20 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all">
-                            f
-                        </a>
-                        <a href="https://www.instagram.com/divyaastrovastu" target="_blank" class="w-10 h-10 border border-white/20 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all">
-                            in
-                        </a>
-                        <a href="https://youtube.com/@divyaastrovastu" target="_blank" class="w-10 h-10 border border-white/20 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all">
-                            yt
-                        </a>
+                    <div class="flex space-x-4 mt-12">
+                        <a href="https://www.facebook.com/share/1AXM9TbnY1/" target="_blank" class="w-10 h-10 border border-white/10 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all text-sm">f</a>
+                        <a href="https://www.instagram.com/divyaastrovastu" target="_blank" class="w-10 h-10 border border-white/10 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all text-sm">in</a>
+                        <a href="https://youtube.com/@divyaastrovastu" target="_blank" class="w-10 h-10 border border-white/10 flex items-center justify-center hover:bg-gold-muted hover:text-cosmic-dark hover:border-gold-muted transition-all text-sm">yt</a>
                     </div>
                 </div>
 
                 <!-- Contact Form -->
-                <div class="bg-[#100B20] p-8 md:p-12 border border-white/5 reveal-on-scroll">
+                <div class="bg-[#0f0a16] p-8 md:p-12 border border-white/5 reveal-on-scroll relative">
+                    <!-- Decorative Corner -->
+                    <div class="absolute top-0 right-0 w-8 h-8 border-t border-r border-gold-muted/30"></div>
+                    
                     <form id="contactForm" class="space-y-8">
                         <div class="relative group">
-                            <input type="text" id="name" required class="w-full bg-transparent border-b border-white/20 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent">
-                            <label for="name" class="absolute left-0 top-4 text-silver transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs">Name</label>
+                            <input type="text" id="name" required class="w-full bg-transparent border-b border-white/10 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent">
+                            <label for="name" class="absolute left-0 top-4 text-silver/50 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs peer-valid:text-gold-muted uppercase tracking-wider">Name</label>
                         </div>
                         <div class="relative group">
-                            <input type="email" id="email" required class="w-full bg-transparent border-b border-white/20 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent">
-                            <label for="email" class="absolute left-0 top-4 text-silver transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs">Email</label>
+                            <input type="email" id="email" required class="w-full bg-transparent border-b border-white/10 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent">
+                            <label for="email" class="absolute left-0 top-4 text-silver/50 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs peer-valid:text-gold-muted uppercase tracking-wider">Email</label>
                         </div>
                         <div class="relative group">
-                            <textarea id="message" rows="4" required class="w-full bg-transparent border-b border-white/20 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent resize-none"></textarea>
-                            <label for="message" class="absolute left-0 top-4 text-silver transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs">Comment or Message</label>
+                            <textarea id="message" rows="4" required class="w-full bg-transparent border-b border-white/10 py-4 text-ivory focus:outline-none focus:border-gold-muted transition-colors peer placeholder-transparent resize-none"></textarea>
+                            <label for="message" class="absolute left-0 top-4 text-silver/50 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-4 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-gold-muted peer-valid:-top-4 peer-valid:text-xs peer-valid:text-gold-muted uppercase tracking-wider">Comment or Message</label>
                         </div>
                         
-                        <button type="submit" class="w-full btn-magnetic py-4 bg-gold-muted text-cosmic-dark font-medium tracking-widest hover:bg-gold-light transition-colors mt-8">
-                            SEND MESSAGE
+                        <button type="submit" class="w-full btn-magnetic py-4 bg-transparent border border-gold-muted/50 text-gold-muted font-medium tracking-[0.2em] text-sm hover:bg-gold-muted hover:text-cosmic-dark transition-colors mt-8 group">
+                            <span class="relative z-10">SEND MESSAGE</span>
                         </button>
                         
-                        <div id="formFeedback" class="text-center text-sm mt-4 h-5"></div>
+                        <div id="formFeedback" class="text-center text-xs mt-4 h-5 text-gold-muted/80"></div>
                     </form>
                 </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer class="py-12 px-6 md:px-12 border-t border-white/10 bg-cosmic-dark relative z-10">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-8 md:mb-0 text-center md:text-left">
-                    <img src="Logo.png" alt="Divya Astro Vastu" class="h-12 w-auto mb-4 mx-auto md:mx-0 opacity-80">
-                    <p class="text-silver/50 text-sm">Vadodara, Gujarat, India</p>
+        <footer class="py-16 px-6 md:px-12 border-t border-white/10 bg-cosmic-dark relative z-10">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="text-center md:text-left">
+                    <img src="Logo.png" alt="Divya Astro Vastu" class="h-12 w-auto mb-4 mx-auto md:mx-0 opacity-70 hover:opacity-100 transition-opacity">
+                    <p class="text-silver/40 text-xs tracking-widest">VADODARA, GUJARAT, INDIA</p>
                 </div>
                 
-                <div class="flex space-x-8 text-sm tracking-widest text-silver/70 mb-8 md:mb-0 uppercase">
+                <div class="flex space-x-10 text-xs tracking-[0.2em] text-silver/60 uppercase">
                     <a href="#" class="hover:text-gold-muted transition-colors">Home</a>
                     <a href="#about" class="hover:text-gold-muted transition-colors">About</a>
                     <a href="#services" class="hover:text-gold-muted transition-colors">Services</a>
                     <a href="#contact" class="hover:text-gold-muted transition-colors">Contact</a>
                 </div>
 
-                <div class="text-silver/40 text-sm">
-                    &copy; 2026 Divya Astro Vastu
+                <div class="text-silver/30 text-xs">
+                    &copy; 2026 DIVYA ASTRO VASTU
                 </div>
             </div>
         </footer>
@@ -755,33 +855,40 @@
         const cursorDot = document.querySelector('.cursor-dot');
         const cursorOutline = document.querySelector('.cursor-outline');
         
-        window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
+        // Only enable custom cursor on non-touch devices
+        if (window.matchMedia("(pointer: fine)").matches) {
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
 
-            // Dot follows immediately
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
+                // Dot follows immediately
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
 
-            // Outline follows with lag (animation in CSS transition not enough for smooth follow, using animate)
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
-        });
-
-        // Add hover effect to interactive elements
-        const interactiveElements = document.querySelectorAll('a, button, .service-card, input, textarea');
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorOutline.classList.add('hovered');
+                // Outline follows with lag
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
             });
-            el.addEventListener('mouseleave', () => {
-                cursorOutline.classList.remove('hovered');
-            });
-        });
 
-        // --- 2. Three.js Particle Background (Subtle Stars) ---
+            // Add hover effect to interactive elements
+            const interactiveElements = document.querySelectorAll('a, button, .poster-card, input, textarea, .service-card');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorOutline.classList.add('hovered');
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorOutline.classList.remove('hovered');
+                });
+            });
+        } else {
+            cursorDot.style.display = 'none';
+            cursorOutline.style.display = 'none';
+            document.body.style.cursor = 'auto';
+        }
+
+        // --- 2. Three.js Particle Background (Mystical Stars) ---
         const initThreeJS = () => {
             const container = document.getElementById('canvas-container');
             const scene = new THREE.Scene();
@@ -793,27 +900,32 @@
             // Renderer
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimize performance
             container.appendChild(renderer.domElement);
 
-            // Particles
+            // Particles (Stars)
             const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 800; // Count of stars
+            const particlesCount = 1000; 
             const posArray = new Float32Array(particlesCount * 3);
+            const sizesArray = new Float32Array(particlesCount);
 
             for(let i = 0; i < particlesCount * 3; i++) {
-                // Spread particles
-                posArray[i] = (Math.random() - 0.5) * 100; 
+                posArray[i] = (Math.random() - 0.5) * 80; 
+            }
+            for(let i = 0; i < particlesCount; i++) {
+                sizesArray[i] = Math.random();
             }
 
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            particlesGeometry.setAttribute('size', new THREE.BufferAttribute(sizesArray, 1));
 
-            // Material
+            // Material - Using PointsMaterial for simplicity and performance
             const material = new THREE.PointsMaterial({
                 size: 0.08,
                 color: 0xC9A45C, // Goldish
                 transparent: true,
-                opacity: 0.8,
+                opacity: 0.6,
+                sizeAttenuation: true
             });
 
             // Mesh
@@ -823,10 +935,15 @@
             // Mouse interaction
             let mouseX = 0;
             let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
 
             document.addEventListener('mousemove', (event) => {
-                mouseX = event.clientX / window.innerWidth - 0.5;
-                mouseY = event.clientY / window.innerHeight - 0.5;
+                mouseX = (event.clientX - windowHalfX);
+                mouseY = (event.clientY - windowHalfY);
             });
 
             // Animation Loop
@@ -835,10 +952,13 @@
             const animate = () => {
                 const elapsedTime = clock.getElapsedTime();
 
-                // Gentle rotation
+                targetX = mouseX * 0.001;
+                targetY = mouseY * 0.001;
+
+                // Gentle rotation based on time and mouse
                 particlesMesh.rotation.y = elapsedTime * 0.05;
-                particlesMesh.rotation.x = mouseY * 0.1;
-                particlesMesh.rotation.y += mouseX * 0.1;
+                particlesMesh.rotation.x += 0.05 * (targetY - particlesMesh.rotation.x);
+                particlesMesh.rotation.y += 0.05 * (targetX - particlesMesh.rotation.y);
 
                 renderer.render(scene, camera);
                 window.requestAnimationFrame(animate);
@@ -861,16 +981,15 @@
             const tl = gsap.timeline();
 
             // Animate Loader Out
-            tl.to('.logo-reveal', { opacity: 1, duration: 1 })
-              .to('#loader', { opacity: 0, duration: 0.8, delay: 0.5, onComplete: () => {
-                  document.getElementById('loader').style.display = 'none';
-              }})
+            tl.to('#loader', { opacity: 0, duration: 1, delay: 0.5, ease: 'power2.inOut', onComplete: () => {
+                document.getElementById('loader').style.display = 'none';
+            }})
               
             // Hero Animations
               .to('.hero-text', { 
                   y: 0, 
                   opacity: 1, 
-                  duration: 1, 
+                  duration: 1.2, 
                   stagger: 0.2, 
                   ease: 'power3.out' 
               }, "-=0.5")
@@ -890,34 +1009,32 @@
         // --- 4. Scroll Animations (GSAP ScrollTrigger) ---
         gsap.registerPlugin(ScrollTrigger);
 
-        // Reveal Sections
+        // Reveal Sections on Scroll
         const revealElements = document.querySelectorAll('.reveal-on-scroll');
-        revealElements.forEach(el => {
-            gsap.fromTo(el, 
+        revealElements.forEach(element => {
+            gsap.fromTo(element, 
                 { y: 50, opacity: 0 },
                 {
                     y: 0,
                     opacity: 1,
-                    duration: 1,
+                    duration: 1.2,
                     ease: 'power3.out',
                     scrollTrigger: {
-                        trigger: el,
-                        start: 'top 85%',
-                        toggleActions: 'play none none reverse'
+                        trigger: element,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse"
                     }
                 }
             );
         });
 
-        // Parallax for Images
-        const parallaxImages = document.querySelectorAll('.image-reveal-container');
-        parallaxImages.forEach(imgContainer => {
-            const img = imgContainer.querySelector('img');
-            gsap.to(img, {
+        // Parallax Effect for Posters
+        gsap.utils.toArray('.poster-card').forEach((card, i) => {
+            gsap.to(card.querySelector('img'), {
                 yPercent: 15,
                 ease: "none",
                 scrollTrigger: {
-                    trigger: imgContainer,
+                    trigger: card,
                     start: "top bottom",
                     end: "bottom top",
                     scrub: true
@@ -925,35 +1042,18 @@
             });
         });
 
-        // Navbar Background on Scroll
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('bg-cosmic-dark/80', 'backdrop-blur-md', 'shadow-lg', 'py-4');
-                navbar.classList.remove('py-6');
-            } else {
-                navbar.classList.remove('bg-cosmic-dark/80', 'backdrop-blur-md', 'shadow-lg', 'py-4');
-                navbar.classList.add('py-6');
-            }
-        });
-
-        // --- 5. Mobile Menu ---
-        const menuBtn = document.getElementById('mobile-menu-btn');
+        // --- 5. Mobile Menu Logic ---
+        const mobileBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileLinks = document.querySelectorAll('.mobile-link');
         let isMenuOpen = false;
 
-        menuBtn.addEventListener('click', () => {
+        mobileBtn.addEventListener('click', () => {
             isMenuOpen = !isMenuOpen;
-            if (isMenuOpen) {
+            if(isMenuOpen) {
                 mobileMenu.classList.remove('translate-x-full');
-                // Animate hamburger
-                menuBtn.children[0].classList.add('rotate-45', 'translate-y-2.5');
-                menuBtn.children[1].classList.add('opacity-0');
             } else {
                 mobileMenu.classList.add('translate-x-full');
-                menuBtn.children[0].classList.remove('rotate-45', 'translate-y-2.5');
-                menuBtn.children[1].classList.remove('opacity-0');
             }
         });
 
@@ -961,8 +1061,6 @@
             link.addEventListener('click', () => {
                 isMenuOpen = false;
                 mobileMenu.classList.add('translate-x-full');
-                menuBtn.children[0].classList.remove('rotate-45', 'translate-y-2.5');
-                menuBtn.children[1].classList.remove('opacity-0');
             });
         });
 
@@ -972,34 +1070,29 @@
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Simulate form submission
             const btn = form.querySelector('button');
-            const originalText = btn.innerText;
+            const originalText = btn.innerHTML;
             
-            // Simulate sending
-            btn.innerText = 'SENDING...';
-            btn.classList.add('opacity-70');
-            
+            btn.innerHTML = 'SENDING...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
             setTimeout(() => {
-                btn.innerText = originalText;
-                btn.classList.remove('opacity-70');
-                feedback.innerText = 'Thank you. We will contact you shortly.';
-                feedback.classList.add('text-gold-muted');
+                feedback.textContent = "Thank you. We have received your message.";
                 form.reset();
+                btn.innerHTML = 'MESSAGE SENT';
+                btn.classList.add('bg-gold-muted', 'text-cosmic-dark');
                 
                 setTimeout(() => {
-                    feedback.innerText = '';
-                }, 5000);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.classList.remove('bg-gold-muted', 'text-cosmic-dark');
+                    feedback.textContent = "";
+                }, 3000);
             }, 1500);
-        });
-
-        // --- 7. Smooth Scroll for Anchor Links ---
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
         });
 
     </script>
