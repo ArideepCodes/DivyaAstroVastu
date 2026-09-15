@@ -36,6 +36,21 @@
                     backgroundImage: {
                         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
                         'cosmic-gradient': 'linear-gradient(to bottom, #050203, #0f0a16, #1a0b2e)',
+                    },
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'spin-reverse': 'spin-reverse 12s linear infinite',
+                        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'spin-reverse': {
+                            '0%': { transform: 'rotate(360deg)' },
+                            '100%': { transform: 'rotate(0deg)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { transform: 'scale(1)', filter: 'drop-shadow(0 0 5px rgba(201,164,92,0.3))' },
+                            '50%': { transform: 'scale(1.05)', filter: 'drop-shadow(0 0 20px rgba(201,164,92,0.8))' },
+                        }
                     }
                 }
             }
@@ -104,7 +119,7 @@
             backdrop-filter: blur(2px);
         }
 
-        /* Loader */
+        /* Loader Styling */
         #loader {
             position: fixed;
             inset: 0;
@@ -114,22 +129,6 @@
             justify-content: center;
             align-items: center;
             transition: opacity 1s ease-out;
-        }
-
-        .loader-symbol {
-            width: 60px;
-            height: 60px;
-            border: 1px solid #C9A45C;
-            transform: rotate(45deg);
-            animation: spin 4s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); border-color: transparent transparent #C9A45C transparent; }
-            25% { transform: rotate(90deg); border-color: transparent transparent transparent #C9A45C; }
-            50% { transform: rotate(180deg); border-color: transparent #C9A45C transparent transparent; }
-            75% { transform: rotate(270deg); border-color: #C9A45C transparent transparent transparent; }
-            100% { transform: rotate(360deg); border-color: transparent transparent #C9A45C transparent; }
         }
 
         /* 3D Canvas */
@@ -228,11 +227,30 @@
 </head>
 <body class="antialiased selection:bg-gold-muted selection:text-cosmic-dark">
 
-    <!-- Loading Screen -->
+    <!-- Loading Screen (Updated with Animated Logo) -->
     <div id="loader">
-        <div class="text-center flex flex-col items-center gap-6">
-            <div class="loader-symbol"></div>
-            <p class="text-xs tracking-[0.4em] text-gold-muted uppercase">Divya Astro Vastu</p>
+        <div class="text-center flex flex-col items-center gap-8">
+            
+            <!-- Animated Logo Container -->
+            <div class="relative w-40 h-40 md:w-56 md:h-56 flex items-center justify-center">
+                
+                <!-- Outer Rotating Ring -->
+                <div class="absolute inset-0 border border-gold-muted/20 rounded-full animate-spin-slow"></div>
+                <div class="absolute inset-2 border-t border-b border-gold-muted/10 rounded-full animate-spin-slow"></div>
+                
+                <!-- Inner Rotating Ring (Reverse) -->
+                <div class="absolute inset-6 border border-gold-muted/30 rounded-full animate-spin-reverse"></div>
+                
+                <!-- The Logo -->
+                <img 
+                    src="Logo.png" 
+                    alt="Divya Astro Vastu" 
+                    class="relative z-10 w-24 h-24 md:w-32 md:h-32 object-contain animate-pulse-glow opacity-0"
+                    id="loader-logo"
+                >
+            </div>
+
+            <p class="text-xs tracking-[0.5em] text-gold-muted uppercase font-light">Loading Mysteries...</p>
         </div>
     </div>
 
@@ -374,64 +392,7 @@
             </div>
         </section>
 
-        <!-- POSTER SECTION: ASTROLOGY / VASTU / NUMEROLOGY -->
-        <section id="expertise" class="py-32 px-6 md:px-12 bg-cosmic-deep relative overflow-hidden">
-            <!-- Section Header -->
-            <div class="max-w-7xl mx-auto mb-20 text-center reveal-on-scroll">
-                <span class="text-gold-muted text-xs tracking-[0.4em] uppercase">Domains of Expertise</span>
-                <h2 class="text-4xl md:text-6xl font-serif text-ivory mt-4">Guidance Through the Cosmos</h2>
-            </div>
-
-            <!-- The 3 Posters Grid -->
-            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                <!-- Poster 01: ASTROLOGY -->
-                <div class="group poster-card h-[500px] relative reveal-on-scroll">
-                    <img src="Slide1.png" alt="Astrology Poster" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    
-                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 z-10 mix-blend-multiply"></div>
-                    
-                    <div class="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <span class="poster-number text-4xl mb-2 block opacity-50 group-hover:opacity-100 transition-opacity">01</span>
-                        <h3 class="text-3xl font-serif text-ivory mb-2 border-b border-gold-muted/50 inline-block pb-1">ASTROLOGY</h3>
-                        <p class="text-silver/80 text-sm font-light tracking-wide mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                            Navigate life with celestial insight.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Poster 02: VASTU -->
-                <div class="group poster-card h-[500px] relative reveal-on-scroll">
-                    <img src="Slide2.png" alt="Vastu Poster" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    
-                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 z-10 mix-blend-multiply"></div>
-                    
-                    <div class="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <span class="poster-number text-4xl mb-2 block opacity-50 group-hover:opacity-100 transition-opacity">02</span>
-                        <h3 class="text-3xl font-serif text-ivory mb-2 border-b border-gold-muted/50 inline-block pb-1">VASTU</h3>
-                        <p class="text-silver/80 text-sm font-light tracking-wide mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                            Spatial harmony for prosperity.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Poster 03: NUMEROLOGY -->
-                <div class="group poster-card h-[500px] relative reveal-on-scroll">
-                    <img src="Slide3.png" alt="Numerology Poster" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    
-                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 z-10 mix-blend-multiply"></div>
-                    
-                    <div class="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <span class="poster-number text-4xl mb-2 block opacity-50 group-hover:opacity-100 transition-opacity">03</span>
-                        <h3 class="text-3xl font-serif text-ivory mb-2 border-b border-gold-muted/50 inline-block pb-1">NUMEROLOGY</h3>
-                        <p class="text-silver/80 text-sm font-light tracking-wide mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                            Unlocking the numbers of destiny.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
+        
 
         <!-- Acharya / Bio Section -->
         <section class="py-32 px-6 md:px-12 bg-cosmic-dark relative border-t border-white/5">
@@ -974,19 +935,32 @@
             });
         };
 
-        // --- 3. Page Load & Loader ---
+        // --- 3. Page Load & Loader (Updated Logic) ---
         window.addEventListener('load', () => {
             initThreeJS();
             
             const tl = gsap.timeline();
 
-            // Animate Loader Out
-            tl.to('#loader', { opacity: 0, duration: 1, delay: 0.5, ease: 'power2.inOut', onComplete: () => {
-                document.getElementById('loader').style.display = 'none';
-            }})
+            // 1. Reveal Logo in Loader
+            tl.to('#loader-logo', { 
+                opacity: 1, 
+                duration: 1.5, 
+                ease: 'power2.out' 
+            });
+
+            // 2. Wait briefly, then Fade Out Loader
+            tl.to('#loader', { 
+                opacity: 0, 
+                duration: 1, 
+                delay: 1, 
+                ease: 'power2.inOut', 
+                onComplete: () => {
+                    document.getElementById('loader').style.display = 'none';
+                }
+            });
               
-            // Hero Animations
-              .to('.hero-text', { 
+            // 3. Hero Animations (Start slightly before loader finishes)
+            tl.to('.hero-text', { 
                   y: 0, 
                   opacity: 1, 
                   duration: 1.2, 
